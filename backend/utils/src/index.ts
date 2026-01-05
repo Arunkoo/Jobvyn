@@ -1,8 +1,9 @@
 import express from "express";
 import dotenv from "dotenv";
-import routes from "./routes";
+
 import cors from "cors";
 import { v2 as cloudinary } from "cloudinary";
+import routes from "./routes";
 // load env..
 dotenv.config();
 
