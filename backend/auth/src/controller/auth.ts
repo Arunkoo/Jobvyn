@@ -4,9 +4,10 @@ import { sql } from "../utils/db.js";
 import ErrorHandler from "../utils/errorHandler.js";
 import { TryCatch } from "../utils/TryCatch.js";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 
 //Register controller
-const registerUser = TryCatch(async (req, res, next) => {
+export const registerUser = TryCatch(async (req, res, next) => {
   const { name, email, password, phoneNumber, role, bio } = req.body;
 
   if (!name || !email || !password || !phoneNumber || !role) {
@@ -34,6 +35,7 @@ const registerUser = TryCatch(async (req, res, next) => {
     `;
     registeredUser = user;
   } else if (role === "jobseeker") {
+    //handling file logic....
     const file = req.file;
 
     if (!file) {
@@ -55,9 +57,9 @@ const registerUser = TryCatch(async (req, res, next) => {
     );
 
     //log for bug
-    console.log("UPLOAD URL:", process.env.UPLOAD_SERVICE_URL);
-    console.log("BUFFER TYPE:", typeof fileBuffer.content);
-    console.log("BUFFER SIZE:", fileBuffer.content.length);
+    // console.log("UPLOAD URL:", process.env.UPLOAD_SERVICE_URL);
+    // console.log("BUFFER TYPE:", typeof fileBuffer.content);
+    // console.log("BUFFER SIZE:", fileBuffer.content.length);
 
     const [user] = await sql` 
       INSERT INTO users (name, email, password, phone_number,role, bio, resume, resume_public_id) VALUES
@@ -67,14 +69,74 @@ const registerUser = TryCatch(async (req, res, next) => {
     registeredUser = user;
   }
 
+  //generating token....
+  const token = jwt.sign(
+    { id: registeredUser?.user_id },
+    process.env.JWT_SECRET as string,
+    {
+      expiresIn: "15d",
+    }
+  );
+
   return res.status(201).json({
     success: true,
-    message: "User registered successfully",
-    user: registeredUser,
+    message: "✅User registered successfully",
+    registeredUser,
+    token,
   });
 });
 
 //loginController.
-// const loginUser = async () => {};
+export const loginUser = TryCatch(async (req, res, next) => {
+  const { email, password } = req.body;
 
-export default registerUser;
+  if (!email || !password) {
+    throw new ErrorHandler(400, "Please provide all nesscary details.");
+  }
+
+  const user = await sql`
+    SELECT 
+      u.user_id, 
+      u.name, 
+      u.email, 
+      u.password, 
+      u.phone_number, 
+      u.role, 
+      u.bio, 
+      u.resume, 
+      u.profile_pic, 
+      u.subscription, 
+    ARRAY_AGG(s.name) FILTER (WHERE s.name IS NOT NULL) as skills 
+    FROM users u LEFT JOIN user_skills us ON u.user_id = us.user_id LEFT JOIN skills s ON us.skill_id = s.skill_id WHERE u.email = ${email} GROUP BY U.user_id;
+  `;
+
+  if (user.length === 0) {
+    throw new ErrorHandler(400, "Invalid credentials");
+  }
+  const userObject = user[0];
+
+  const matchPassword = await bcrypt.compare(password, userObject.password);
+
+  if (!matchPassword) {
+    throw new ErrorHandler(400, "Invalid credentials");
+  }
+
+  userObject.skills = userObject.skills || [];
+  delete userObject.password;
+
+  //generating token....
+  const token = jwt.sign(
+    { id: userObject?.user_id },
+    process.env.JWT_SECRET as string,
+    {
+      expiresIn: "15d",
+    }
+  );
+
+  return res.status(201).json({
+    success: true,
+    message: "✅User LoggedIn successfully",
+    userObject,
+    token,
+  });
+});
