@@ -121,8 +121,9 @@ export const loginUser = TryCatch(async (req, res, next) => {
     throw new ErrorHandler(400, "Invalid credentials");
   }
 
+  // maybe user skill is empty so we handle it...
   userObject.skills = userObject.skills || [];
-  delete userObject.password;
+  delete userObject.password; //security check..
 
   //generating token....
   const token = jwt.sign(
@@ -133,7 +134,7 @@ export const loginUser = TryCatch(async (req, res, next) => {
     }
   );
 
-  return res.status(201).json({
+  return res.status(200).json({
     success: true,
     message: "✅User LoggedIn successfully",
     userObject,
