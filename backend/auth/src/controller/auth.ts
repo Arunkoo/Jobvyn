@@ -5,7 +5,12 @@ import ErrorHandler from "../utils/errorHandler.js";
 import { TryCatch } from "../utils/TryCatch.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import dotenv from "dotenv";
+import { forgotPasswordTemplate } from "../template.js";
+import { publishToTopic } from "../producer.js";
 
+//load variable form env...
+dotenv.config();
 //Register controller
 export const registerUser = TryCatch(async (req, res, next) => {
   const { name, email, password, phoneNumber, role, bio } = req.body;
@@ -139,5 +144,49 @@ export const loginUser = TryCatch(async (req, res, next) => {
     message: "✅User LoggedIn successfully",
     userObject,
     token,
+  });
+});
+
+//forgotPassword...
+export const forgotPassword = TryCatch(async (req, res, next) => {
+  const { email } = req.body;
+
+  if (!email) {
+    throw new ErrorHandler(400, "Email is required.");
+  }
+
+  const user = await sql`
+    SELECT user_id, email FROM users WHERE email = ${email}
+  `;
+
+  if (user.length === 0) {
+    return res.json({
+      message: "if email exist, we have sent a reset link",
+    });
+  }
+
+  const user_data = user[0];
+
+  const resetToken = jwt.sign(
+    {
+      email: user_data.email,
+      type: "reset",
+    },
+    process.env.JWT_SEC as string,
+    { expiresIn: "10m" }
+  );
+
+  const resetLink = `${process.env.FRONTEND_URL}/reset/${resetToken}`;
+  const safeName = user_data.name.replace(/[<>]/g, "");
+  const message = {
+    to: email,
+    subject: "RESET YOUR PASSWORD - Jobvyn👋",
+    html: forgotPasswordTemplate(resetLink, safeName),
+  };
+
+  publishToTopic("send-mail", message);
+
+  res.json({
+    message: "if email exist, we have sent a reset link",
   });
 });
