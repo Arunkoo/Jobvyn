@@ -156,7 +156,7 @@ export const forgotPassword = TryCatch(async (req, res, next) => {
   }
 
   const user = await sql`
-    SELECT user_id, email FROM users WHERE email = ${email}
+    SELECT user_id, name, email FROM users WHERE email = ${email}
   `;
 
   if (user.length === 0) {
@@ -172,12 +172,12 @@ export const forgotPassword = TryCatch(async (req, res, next) => {
       email: user_data.email,
       type: "reset",
     },
-    process.env.JWT_SEC as string,
+    process.env.JWT_SECRET as string,
     { expiresIn: "10m" }
   );
 
   const resetLink = `${process.env.FRONTEND_URL}/reset/${resetToken}`;
-  const safeName = user_data.name.replace(/[<>]/g, "");
+  const safeName = (user_data.name || "User").replace(/[<>]/g, "");
   const message = {
     to: email,
     subject: "RESET YOUR PASSWORD - Jobvyn👋",

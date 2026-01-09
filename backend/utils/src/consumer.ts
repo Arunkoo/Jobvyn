@@ -1,6 +1,6 @@
 import { Kafka } from "kafkajs";
 import nodemailer from "nodemailer";
-import SendmailTransport from "nodemailer/lib/sendmail-transport";
+
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -36,8 +36,8 @@ export const startSendMailConsumer = async () => {
             port: 465,
             secure: true,
             auth: {
-              user: "xyz",
-              pass: "yzx",
+              user: process.env.GOOGLE_EMAIL,
+              pass: process.env.GOOGLE_PASSWORD,
             },
           });
 
