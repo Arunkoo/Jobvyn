@@ -1,7 +1,12 @@
 //myProfile...
 
+import { AuthenticatedRequest } from "../middleware/auth.js";
 import { TryCatch } from "../utils/TryCatch.js";
 
-export default myProfile = TryCatch(async (req, res, next) => {
-  //pass..
-});
+export const myProfile = TryCatch(
+  async (req: AuthenticatedRequest, res, next) => {
+    const user = req.user;
+
+    res.json(user);
+  }
+);

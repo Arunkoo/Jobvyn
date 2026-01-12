@@ -33,7 +33,8 @@ export const isAuthenticated = async (
   try {
     const authHeader = req.headers.authorization;
 
-    if (!authHeader || authHeader.startsWith("Bearer")) {
+    if (!authHeader || authHeader.startsWith("bearer")) {
+      console.log("AUTH HEADER:", authHeader);
       res.status(401).json({
         message: "Authorization header is missing or invalid",
       });
@@ -45,8 +46,8 @@ export const isAuthenticated = async (
       token,
       process.env.JWT_SECRET as string
     ) as JwtPayload;
-
-    if (!decodedPayload || decodedPayload.id) {
+    console.log("DECODED TOKEN:", decodedPayload);
+    if (!decodedPayload || !decodedPayload.id) {
       res.status(401).json({
         message: "Invalid Token!",
       });
@@ -75,7 +76,7 @@ export const isAuthenticated = async (
         ON u.user_id = us.user_id
         LEFT JOIN skills s
         ON us.skill_id = s.skill_id
-        WHERE u.user_id = ${decodedPayload}
+        WHERE u.user_id = ${decodedPayload.id}
         GROUP BY u.user_id;
     `;
 

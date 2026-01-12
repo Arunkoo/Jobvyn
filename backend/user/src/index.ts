@@ -10,5 +10,5 @@ const PORT = process.env.PORT || 5002;
 
 app.use("/api/user", userRoutes);
 app.listen(PORT, () => {
-  console.log(`User service is running at http://localhost/${PORT}`);
+  console.log(`User service is running at http://localhost:${PORT}`);
 });
