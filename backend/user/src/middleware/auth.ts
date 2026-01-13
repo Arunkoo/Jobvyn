@@ -34,7 +34,6 @@ export const isAuthenticated = async (
     const authHeader = req.headers.authorization;
 
     if (!authHeader || authHeader.startsWith("bearer")) {
-      console.log("AUTH HEADER:", authHeader);
       res.status(401).json({
         message: "Authorization header is missing or invalid",
       });
@@ -46,7 +45,7 @@ export const isAuthenticated = async (
       token,
       process.env.JWT_SECRET as string
     ) as JwtPayload;
-    console.log("DECODED TOKEN:", decodedPayload);
+    // console.log("DECODED TOKEN:", decodedPayload);
     if (!decodedPayload || !decodedPayload.id) {
       res.status(401).json({
         message: "Invalid Token!",
@@ -67,7 +66,6 @@ export const isAuthenticated = async (
             u.resume_public_id,
             u.profile_pic,
             u.profile_pic_public_id,
-            u.skills,
             u.subscription,
         ARRAY_AGG(s.name)
         FILTER (WHERE s.name IS NOT NULL) as skills
