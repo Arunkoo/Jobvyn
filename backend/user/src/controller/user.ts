@@ -138,6 +138,7 @@ export const updateProfilePic = TryCatch(
   }
 );
 
+//upload or update resume...
 export const updateResume = TryCatch(
   async (req: AuthenticatedRequest, res, next) => {
     const user = req.user;
@@ -176,6 +177,96 @@ export const updateResume = TryCatch(
     res.json({
       message: "✅ Resume Updated Succesfully",
       updatedUser,
+    });
+  }
+);
+
+//add skill to userProfile..
+export const addSkillToUser = TryCatch(
+  async (req: AuthenticatedRequest, res, next) => {
+    const userId = req.user?.user_id;
+
+    if (!userId) {
+      throw new ErrorHandler(401, "❌ User Id is Undefined or Null");
+    }
+
+    const { skillName } = req.body;
+
+    if (!skillName || skillName.trim() === "") {
+      throw new ErrorHandler(400, "❌ Please Provide atleast one skill");
+    }
+
+    const normalizedSkill = skillName.trim().toLowerCase();
+    let isSkillAlreadyPresent = false;
+
+    try {
+      await sql`BEGIN`;
+      const user =
+        await sql`SELECT user_id FROM users WHERE user_id = ${userId}`;
+
+      if (user.length === 0) {
+        throw new ErrorHandler(404, "❌ User not found");
+      }
+      //query below hanlde duplicate rows while returning id properly..
+      const [skill] =
+        await sql`INSERT INTO skills (name) VALUES (${normalizedSkill}) ON CONFLICT (name) DO UPDATE SET name = EXCLUDED.name RETURNING skill_id`;
+
+      const skillId = skill.skill_id;
+
+      const insertionResult =
+        await sql`INSERT INTO user_skills (user_id, skill_id) VALUES (${userId}, ${skillId}) ON CONFLICT (user_id, skill_id) DO NOTHING RETURNING user_id`;
+
+      if (insertionResult.length > 0) {
+        isSkillAlreadyPresent = true;
+      }
+
+      await sql`COMMIT`;
+    } catch (error) {
+      await sql`ROLLBACK`;
+      throw error;
+    }
+
+    if (!isSkillAlreadyPresent) {
+      return res.status(200).json({
+        message: "❌ Skill already exists.",
+      });
+    }
+
+    res.json({
+      message: `✅ Skill ${normalizedSkill} is added successfully`,
+    });
+  }
+);
+
+//delete skill in userProfile...
+export const deleteSkillFromUser = TryCatch(
+  async (req: AuthenticatedRequest, res, next) => {
+    const user = req.user;
+
+    if (!user) {
+      throw new ErrorHandler(401, "❌ Authentication Required");
+    }
+
+    const { skillName } = req.body;
+
+    if (!skillName || skillName.trim() === "") {
+      throw new ErrorHandler(
+        401,
+        "❌ Please Select atleast one skill to delete"
+      );
+    }
+
+    const normalizedSkill = skillName.trim().toLowerCase(); //to avoid duplicate and maintain proper floe..
+
+    const result =
+      await sql`DELETE FROM user_skills WHERE user_id = ${user.user_id} AND skill_id = (SELECT skill_id FROM skills WHERE name = ${normalizedSkill}) RETURNING user_id;`;
+
+    if (result.length === 0) {
+      throw new ErrorHandler(404, `❌ Skill ${normalizedSkill} was not found`);
+    }
+
+    res.json({
+      message: `✅ Skill ${normalizedSkill} was deleted successfully`,
     });
   }
 );
