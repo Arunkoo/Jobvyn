@@ -137,3 +137,45 @@ export const updateProfilePic = TryCatch(
     });
   }
 );
+
+export const updateResume = TryCatch(
+  async (req: AuthenticatedRequest, res, next) => {
+    const user = req.user;
+
+    if (!user) {
+      throw new ErrorHandler(401, "❌ Authentication required");
+    }
+
+    const file = req.file;
+
+    if (!file) {
+      throw new ErrorHandler(401, "❌ pdf file is not provided");
+    }
+
+    const oldPublicId = user.resume_public_id;
+    const fileBuffer = getBuffer(file);
+    if (!fileBuffer || !fileBuffer.content) {
+      throw new ErrorHandler(500, "❌ Failed to generate buffer.");
+    }
+
+    const { data: uploadResult } = await axios.post(
+      `${process.env.UPLOAD_SERVICE_URL}/api/utils/upload`,
+      {
+        buffer: fileBuffer.content,
+        public_id: oldPublicId,
+      }
+    );
+
+    const [updatedUser] = await sql`
+      UPDATE users SET resume = ${uploadResult.url},
+      resume_public_id = ${uploadResult.public_id}
+      WHERE user_id = ${user.user_id}
+      RETURNING user_id, name, resume;
+    `;
+
+    res.json({
+      message: "✅ Resume Updated Succesfully",
+      updatedUser,
+    });
+  }
+);
