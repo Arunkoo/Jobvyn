@@ -39,6 +39,7 @@ export const createCompany = TryCatch(
         409,
         `A company with this name ${normalizedName} already exists`,
       );
+      return;
     }
 
     //i need company logo...
