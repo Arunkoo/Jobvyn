@@ -10,15 +10,15 @@ async function initDB() {
   try {
     //CHECKING AND SETTING types BEFORE ANY TABLE EXISTS...
     await sql`
-      DO$$
+      DO $$
       BEGIN
-        IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typename = 'job_type') THEN
+        IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'job_type') THEN
         CREATE TYPE job_type AS ENUM ('Full-Time', 'Part-Time','Contract','Internship');
         END IF;
-        IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typename = 'work_location') THEN
+        IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'work_location') THEN
         CREATE TYPE work_location AS ENUM ('On-site', 'Remote','Hybrid');
         END IF;
-        IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typename = 'application_status') THEN
+        IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'application_status') THEN
         CREATE TYPE application_status AS ENUM ('Submitted', 'Rejected','Hired');
         END IF;
       END$$;  
@@ -53,7 +53,7 @@ async function initDB() {
         work_location work_location NOT NULL,
         company_id INTEGER NOT NULL REFERENCES companies(company_id) ON DELETE CASCADE,
         posted_by_recruiter_id INTEGER NOT NULL,
-        created_at TIMESTAMPZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
         is_active BOOLEAN DEFAULT True
       )
     `;
@@ -74,7 +74,7 @@ async function initDB() {
     `;
 
     console.log(
-      "✅ Job Service Database Table Checked And Created Successfully"
+      "✅ Job Service Database Table Checked And Created Successfully",
     );
   } catch (error) {
     console.log("❌ Error While Creating Job Service Tables", error);
