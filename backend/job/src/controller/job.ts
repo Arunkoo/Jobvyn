@@ -7,6 +7,7 @@ import { sql } from "../utils/db.js";
 import ErrorHandler from "../utils/errorHandler.js";
 import { TryCatch } from "../utils/TryCatch.js";
 
+//create a company...
 export const createCompany = TryCatch(
   async (req: AuthenticatedRequest, res, next) => {
     const user = req.user;
@@ -83,6 +84,31 @@ export const createCompany = TryCatch(
     res.json({
       message: "✅ Company created successfully",
       newCompany,
+    });
+  },
+);
+
+//delete a company...
+export const deleteCompany = TryCatch(
+  async (req: AuthenticatedRequest, res, next) => {
+    const user = req.user; //why?we need user to delete company  because only recuriter can delete a company....
+    const { companyId } = req.params;
+
+    const [company] = await sql`
+      SELECT logo_public_id FROM companies WHERE company_id = ${companyId} AND recruiter_id = ${user?.user_id}
+    `;
+
+    if (!company) {
+      throw new ErrorHandler(
+        404,
+        "❌ Company not found or you're not authorized to delete it.",
+      );
+    }
+
+    await sql`DELETE FROM companies WHERE company_id = ${companyId}`;
+
+    res.json({
+      message: "✅ Company and all associated jobs have been deleted",
     });
   },
 );

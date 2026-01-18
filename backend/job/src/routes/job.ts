@@ -1,9 +1,10 @@
 import express from "express";
 import { isAuthenticated } from "../middleware/auth.js";
 import uploadFile from "../middleware/multer.js";
-import { createCompany } from "../controller/job.js";
+import { createCompany, deleteCompany } from "../controller/job.js";
 
 const jobRouter = express.Router();
 
 jobRouter.post("/company/new", isAuthenticated, uploadFile, createCompany);
+jobRouter.delete("/company/:companyId", isAuthenticated, deleteCompany);
 export default jobRouter;
