@@ -5,6 +5,8 @@ import {
   createCompany,
   createJob,
   deleteCompany,
+  getAllCompany,
+  getCompanyDetails,
   updateJob,
 } from "../controller/job.js";
 
@@ -14,4 +16,6 @@ jobRouter.post("/company/new", isAuthenticated, uploadFile, createCompany);
 jobRouter.delete("/company/:companyId", isAuthenticated, deleteCompany);
 jobRouter.post("/new", isAuthenticated, createJob);
 jobRouter.put("/update/:jobId", isAuthenticated, updateJob);
+jobRouter.get("/company/all", isAuthenticated, getAllCompany);
+jobRouter.get("/company/:companyId", isAuthenticated, getCompanyDetails);
 export default jobRouter;

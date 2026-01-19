@@ -226,3 +226,46 @@ export const updateJob = TryCatch(
     });
   },
 );
+
+//fetch all companies.....
+export const getAllCompany = TryCatch(
+  async (req: AuthenticatedRequest, res, next) => {
+    const companies =
+      await sql`SELECT * FROM companies WHERE recruiter_id = ${req.user?.user_id}`;
+
+    res.json({
+      companies,
+    });
+  },
+);
+
+//fetch one company....
+export const getCompanyDetails = TryCatch(
+  async (req: AuthenticatedRequest, res, next) => {
+    const { companyId } = req.params;
+    if (!companyId) {
+      throw new ErrorHandler(400, "Company id is required");
+    }
+
+    //imp query...
+    // “Give me the company whose id = ${companyId}, including all its columns, and attach a jobs field that is a JSON array of all jobs belonging to that company.
+    // If the company has no jobs, jobs should be an empty array. Return exactly one row.”
+    const [companyData] = await sql`SELECT c.*, COALESCE (
+        (
+          SELECT json_agg(j.*) FROM jobs j WHERE j.company_id = c.company_id
+        ),
+        '[]'::json
+      )AS jobs
+      FROM companies c WHERE c.company_id = ${companyId}
+      GROUP BY c.company_id;
+      `;
+
+    if (!companyData) {
+      throw new ErrorHandler(404, "company not found");
+    }
+
+    res.json({
+      companyData,
+    });
+  },
+);
