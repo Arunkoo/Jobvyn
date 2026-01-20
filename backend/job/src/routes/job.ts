@@ -5,6 +5,7 @@ import {
   createCompany,
   createJob,
   deleteCompany,
+  getAllActiveJobs,
   getAllCompany,
   getCompanyDetails,
   updateJob,
@@ -15,7 +16,8 @@ const jobRouter = express.Router();
 jobRouter.post("/company/new", isAuthenticated, uploadFile, createCompany);
 jobRouter.delete("/company/:companyId", isAuthenticated, deleteCompany);
 jobRouter.post("/new", isAuthenticated, createJob);
-jobRouter.put("/update/:jobId", isAuthenticated, updateJob);
+jobRouter.put("/:jobId", isAuthenticated, updateJob);
 jobRouter.get("/company/all", isAuthenticated, getAllCompany);
 jobRouter.get("/company/:companyId", isAuthenticated, getCompanyDetails);
+jobRouter.get("/all", getAllActiveJobs);
 export default jobRouter;
