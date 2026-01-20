@@ -17,7 +17,7 @@ export const myProfile = TryCatch(
     const user = req.user;
 
     res.json(user);
-  }
+  },
 );
 
 //getUserProfile....{depend on params to fetch user_details}
@@ -89,7 +89,7 @@ export const updateUserProfile = TryCatch(
       message: "✅ Profile Updated succesfully",
       updatedUser,
     });
-  }
+  },
 );
 
 //upload or update profileImage...
@@ -120,7 +120,7 @@ export const updateProfilePic = TryCatch(
       {
         buffer: fileBuffer.content,
         public_id: oldPublicId,
-      }
+      },
     );
 
     const [updatedUser] = await sql`
@@ -135,7 +135,7 @@ export const updateProfilePic = TryCatch(
       message: "✅ Profile Image Updated Succesfully",
       updatedUser,
     });
-  }
+  },
 );
 
 //upload or update resume...
@@ -164,7 +164,7 @@ export const updateResume = TryCatch(
       {
         buffer: fileBuffer.content,
         public_id: oldPublicId,
-      }
+      },
     );
 
     const [updatedUser] = await sql`
@@ -178,7 +178,7 @@ export const updateResume = TryCatch(
       message: "✅ Resume Updated Succesfully",
       updatedUser,
     });
-  }
+  },
 );
 
 //add skill to userProfile..
@@ -235,7 +235,7 @@ export const addSkillToUser = TryCatch(
     res.json({
       message: `✅ Skill ${normalizedSkill} is added successfully`,
     });
-  }
+  },
 );
 
 //delete skill in userProfile...
@@ -252,7 +252,7 @@ export const deleteSkillFromUser = TryCatch(
     if (!skillName || skillName.trim() === "") {
       throw new ErrorHandler(
         401,
-        "❌ Please Select atleast one skill to delete"
+        "❌ Please Select atleast one skill to delete",
       );
     }
 
@@ -268,5 +268,104 @@ export const deleteSkillFromUser = TryCatch(
     res.json({
       message: `✅ Skill ${normalizedSkill} was deleted successfully`,
     });
-  }
+  },
+);
+
+//apply to jobs.....
+
+export const applyForJob = TryCatch(
+  async (req: AuthenticatedRequest, res, next) => {
+    const user = req.user;
+
+    if (!user) {
+      throw new ErrorHandler(401, "Authentication required");
+    }
+
+    if (user.role !== "jobseeker") {
+      throw new ErrorHandler(
+        403,
+        "Forbidden: only jobseeker can apply for job",
+      );
+    }
+
+    const applicant_id = user.user_id;
+
+    const resume = user.resume;
+
+    if (!resume) {
+      throw new ErrorHandler(
+        400,
+        "Add your resume in profile to apply for this job",
+      );
+    }
+
+    const { job_id } = req.body;
+
+    if (!job_id) {
+      throw new ErrorHandler(400, "job id is required");
+    }
+
+    const [job] = await sql`
+      SELECT is_active FROM jobs Where job_id = ${job_id}
+    `;
+
+    if (!job) {
+      throw new ErrorHandler(404, "No job found with this id");
+    }
+
+    if (!job.is_active) {
+      throw new ErrorHandler(400, "Job is not active");
+    }
+
+    //subscroption logic...
+
+    const now = Date.now();
+    const subTime = req.user?.subscription
+      ? new Date(req.user.subscription).getTime()
+      : 0;
+
+    const isSubscribed = subTime > now;
+
+    let newApplication;
+
+    try {
+      [newApplication] = await sql`
+        INSERT INTO application (
+          job_id,
+          applicant_id,
+          applicant_email,
+          resume,
+          subscribed
+        ) VALUES (
+          ${job_id},
+          ${applicant_id},
+          ${user?.email},
+          ${resume},
+          ${isSubscribed}
+        )
+      `;
+    } catch (error: any) {
+      if (error.code === "23505") {
+        //23505 code is for unique constraint.
+        throw new ErrorHandler(409, "you have already applied for this job");
+      }
+      throw error;
+    }
+
+    res.json({
+      message: "✅ Applied for job successfully",
+      application: newApplication,
+    });
+  },
+);
+
+//get all application....
+export const getAllApplication = TryCatch(
+  async (req: AuthenticatedRequest, res, next) => {
+    const application = await sql`
+      SELECT a.*, j.title AS job_title, j.salary AS job_salary, j.location AS job_location FROM application a JOIN jobs j ON a.job_id = j.job_id WHERE a.applicant_id = ${req.user?.user_id}
+    `;
+
+    res.json(application);
+  },
 );

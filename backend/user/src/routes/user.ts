@@ -2,7 +2,9 @@ import express from "express";
 import { isAuthenticated } from "../middleware/auth.js";
 import {
   addSkillToUser,
+  applyForJob,
   deleteSkillFromUser,
+  getAllApplication,
   getUserProfile,
   myProfile,
   updateProfilePic,
@@ -20,10 +22,12 @@ userRoutes.put(
   "/update/profile_pic",
   isAuthenticated,
   uploadFile,
-  updateProfilePic
+  updateProfilePic,
 );
 userRoutes.put("/update/resume", isAuthenticated, uploadFile, updateResume);
 userRoutes.post("/skill/add", isAuthenticated, addSkillToUser);
 userRoutes.delete("/skill/delete", isAuthenticated, deleteSkillFromUser);
+userRoutes.post("/apply/job", isAuthenticated, applyForJob);
+userRoutes.get("/application/all", isAuthenticated, getAllApplication);
 export default userRoutes;
 0;
