@@ -30,4 +30,3 @@ userRoutes.delete("/skill/delete", isAuthenticated, deleteSkillFromUser);
 userRoutes.post("/apply/job", isAuthenticated, applyForJob);
 userRoutes.get("/application/all", isAuthenticated, getAllApplication);
 export default userRoutes;
-0;
