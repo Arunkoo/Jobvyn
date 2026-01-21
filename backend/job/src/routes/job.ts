@@ -6,6 +6,7 @@ import {
   createJob,
   deleteCompany,
   getAllActiveJobs,
+  getAllApplicationForJob,
   getAllCompany,
   getCompanyDetails,
   getSingleJob,
@@ -22,4 +23,5 @@ jobRouter.get("/company/all", isAuthenticated, getAllCompany);
 jobRouter.get("/company/:companyId", isAuthenticated, getCompanyDetails);
 jobRouter.get("/all", getAllActiveJobs);
 jobRouter.get("/:id", getSingleJob);
+jobRouter.get("/applications/:jobId", isAuthenticated, getAllApplicationForJob);
 export default jobRouter;
