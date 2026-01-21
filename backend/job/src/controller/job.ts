@@ -6,6 +6,8 @@ import getBuffer from "../utils/buffer.js";
 import { sql } from "../utils/db.js";
 import ErrorHandler from "../utils/errorHandler.js";
 import { TryCatch } from "../utils/TryCatch.js";
+import { applicationStatusUpdateTemplate } from "../template.js";
+import { publishToTopic } from "../producer.js";
 
 //create a company...
 export const createCompany = TryCatch(
@@ -344,5 +346,63 @@ export const getAllApplicationForJob = TryCatch(
     `;
 
     res.json(applications);
+  },
+);
+
+export const updateApplicationStatus = TryCatch(
+  async (req: AuthenticatedRequest, res, next) => {
+    const user = req.user;
+
+    if (!user) {
+      throw new ErrorHandler(401, "Authentication required");
+    }
+
+    if (user.role !== "recruiter") {
+      throw new ErrorHandler(403, "Forbidden: Only recruiter can acces this.");
+    }
+
+    const { id } = req.params; //application id..
+
+    const [application] = await sql`
+      SELECT * FROM application WHERE application_id = ${id}
+    `;
+
+    if (!application) {
+      throw new ErrorHandler(404, "Application not found");
+    }
+
+    const [job] = await sql`
+      SELECT posted_by_recruiter_id, title FROM jobs WHERE job_id = ${application.job_id}
+    `;
+
+    if (!job) {
+      throw new ErrorHandler(404, "No job with this id");
+    }
+
+    if (job.posted_by_recruiter_id !== user.user_id) {
+      throw new ErrorHandler(403, "Forbidden: you are not allowed");
+    }
+
+    const [updatedApplication] = await sql`
+      UPDATE application SET status = ${req.body.status} WHERE application_id = ${id} RETURNING *
+    `;
+
+    //sending message to kafka  queue....
+    const message = {
+      to: application.applicant_email,
+      subject: "Application Status - jobvyn",
+      html: applicationStatusUpdateTemplate(job.title),
+    };
+
+    //publish the message to kafka broker...
+    publishToTopic("send-mail", message).catch((error) => {
+      console.log("Failed to publish message to kafka", error);
+    });
+
+    res.json({
+      message: "✅ Application Status updated successfully",
+      job,
+      updatedApplication,
+    });
   },
 );

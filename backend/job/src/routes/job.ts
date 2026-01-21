@@ -10,6 +10,7 @@ import {
   getAllCompany,
   getCompanyDetails,
   getSingleJob,
+  updateApplicationStatus,
   updateJob,
 } from "../controller/job.js";
 
@@ -24,4 +25,9 @@ jobRouter.get("/company/:companyId", isAuthenticated, getCompanyDetails);
 jobRouter.get("/all", getAllActiveJobs);
 jobRouter.get("/:id", getSingleJob);
 jobRouter.get("/applications/:jobId", isAuthenticated, getAllApplicationForJob);
+jobRouter.put(
+  "/application/update/:id",
+  isAuthenticated,
+  updateApplicationStatus,
+);
 export default jobRouter;
