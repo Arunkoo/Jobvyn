@@ -81,7 +81,7 @@ Rules:
   }
 });
 
-//resume Analyzier......
+//resume Analyzier......//FIXME:
 router.post("/resumeAnalyzer", async (req, res) => {
   try {
     const { pdfBase64 } = req.body;
