@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { Button } from "./ui/button";
+
 import {
   BriefcaseBusinessIcon,
   LucideHome,
@@ -10,6 +11,11 @@ import {
   LogIn,
   LogOut,
   InfoIcon,
+  Spotlight,
+  Feather,
+  Menu,
+  X,
+  HomeIcon,
 } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
@@ -20,7 +26,7 @@ const Navbar = () => {
   const toggleMenu = () => {
     setIsOpen(!isOpen);
   };
-  const isAuth = true; //TODO: replace with real auth check
+  const isAuth = false; //TODO: replace with real auth check
   const logoutHandler = () => {
     //TODO:
   };
@@ -31,10 +37,9 @@ const Navbar = () => {
         <div className="flex justify-between items-center h-16">
           {/* logo */}
           <div className="flex items-center">
-            <Link href={"/"} className="flex items-center gap-1 group">
-              <div className="text-2xl font-bold tracking-tight">
-                <span>Jobvyn</span>
-              </div>
+            <Link href={"/"} className="flex items-center gap-2 group">
+              {/* <Feather /> */}
+              <div className="text-2xl font-bold tracking-tight">Jobvyn</div>
             </Link>
           </div>
 
@@ -118,6 +123,83 @@ const Navbar = () => {
             )}
             <ModeToggle />
           </div>
+
+          {/* Mobile Navigation.. */}
+          <div className="md:hidden flex items-center gap-3">
+            <ModeToggle />
+            <button
+              onClick={toggleMenu}
+              className="p-2 rounded-lg hover:bg-accent transition-colors cursor-pointer"
+              aria-label="Toggle menu"
+            >
+              {isOpen ? <X size={24} /> : <Menu size={24} />}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* mobile view */}
+      <div
+        className={`md:hidden border-t overflow-hidden transition-all duration-300 ease-in-out ${isOpen ? "max-96 opacity-100" : "max-h-0 opacity-0"}`}
+      >
+        <div className="px-3 py-3 space-y-1 bg-background/95 backdrop-blur-md">
+          {/* Auth or user */}
+          <Link href={"/"} onClick={toggleMenu}>
+            <Button
+              variant={"ghost"}
+              className="w-full justify-start gap-3 h-11"
+            >
+              <HomeIcon size={18} /> Home
+            </Button>
+          </Link>
+          <Link href={"/jobs"} onClick={toggleMenu}>
+            <Button
+              variant={"ghost"}
+              className="w-full justify-start gap-3 h-11"
+            >
+              <BriefcaseBusinessIcon size={18} /> Jobs
+            </Button>
+          </Link>
+          <Link href={"/about"} onClick={toggleMenu}>
+            <Button
+              variant={"ghost"}
+              className="w-full justify-start gap-3 h-11"
+            >
+              <InfoIcon size={18} /> About
+            </Button>
+          </Link>
+
+          {isAuth ? (
+            <>
+              <Link href={"/myAccount"} onClick={toggleMenu}>
+                <Button
+                  variant={"ghost"}
+                  className="w-full justify-start gap-3 h-11 mt-2"
+                >
+                  <User size={18} /> My Account
+                </Button>
+              </Link>
+              <Button
+                variant={"default"}
+                className="w-full justify-start gap-3 h-11"
+                onClick={() => {
+                  logoutHandler();
+                  toggleMenu();
+                }}
+              >
+                <LogOut size={18} /> Sign Out
+              </Button>
+            </>
+          ) : (
+            <Link href={"/login"} onClick={toggleMenu}>
+              <Button
+                variant={"default"}
+                className="w-full justify-start gap-3 h-11 mt-2"
+              >
+                <LogIn size={18} /> Sign In
+              </Button>
+            </Link>
+          )}
         </div>
       </div>
     </nav>
