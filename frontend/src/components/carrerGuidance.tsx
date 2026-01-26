@@ -69,7 +69,7 @@ const CarrerGuidance = () => {
       setResponse(data);
       alert("Career guidance generated successfully.");
     } catch (error: any) {
-      alert(error.response.data.message);
+      alert(error.response?.data?.message);
     } finally {
       setLoading(false);
     }
@@ -179,7 +179,8 @@ const CarrerGuidance = () => {
               <>
                 <DialogHeader>
                   <DialogTitle className="text-2xl flex items-center gap-2">
-                    <Target className="text-blue-600" />Y
+                    <Target className="text-blue-600" />
+                    Your Personalized Career Roadmap
                   </DialogTitle>
                 </DialogHeader>
                 <div className="space-y-6 py-4">
@@ -274,15 +275,29 @@ const CarrerGuidance = () => {
                       <BookOpen size={20} className="text-blue-600" />
                       {response.learningApproach.title}
                     </h3>
-                    <ul>
-                      {/* {response.learningApproach.map((point, index) => (
+                    <ul className="space-y-2">
+                      {response.learningApproach.points.map((point, index) => (
                         <li
                           key={index}
                           className="text-sm flex items-start gap-2"
-                        ></li>
-                      ))} */}
+                        >
+                          <span className="text-blue-600 mt-0.5">•</span>
+                          <span
+                            className="opacity-90"
+                            dangerouslySetInnerHTML={{ __html: point }}
+                          />
+                        </li>
+                      ))}
                     </ul>
                   </div>
+
+                  <Button
+                    onClick={resetDialog}
+                    variant={"outline"}
+                    className="w-full"
+                  >
+                    Start New Analysis
+                  </Button>
                 </div>
               </>
             )}

@@ -30,4 +30,4 @@ export interface CarrerGuideResponse {
   learningApproach: LearningApproach;
 }
 
-export const utils_service_url = "https://localhost:5001";
+export const utils_service_url = "http://localhost:5001";
