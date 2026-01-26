@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
-import { CareerGuideResponse, utils_service_url } from "@/type";
+import { CareerGuideResponse } from "@/type";
 import axios from "axios";
 import {
   ArrowRight,
@@ -28,6 +28,7 @@ import { Button } from "./ui/button";
 import { Label } from "./ui/label";
 import { Input } from "./ui/input";
 import { Badge } from "./ui/badge";
+import { utils_service_url } from "@/context/AppContext";
 
 const CareerGuidance = () => {
   const [open, setOpen] = useState(false);

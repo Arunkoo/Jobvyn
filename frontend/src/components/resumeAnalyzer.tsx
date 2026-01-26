@@ -21,8 +21,9 @@ import {
   Zap,
 } from "lucide-react";
 import axios from "axios";
-import { ResumeAnalysisResponse, utils_service_url } from "@/type";
+import { ResumeAnalysisResponse } from "@/type";
 import { Badge } from "./ui/badge";
+import { utils_service_url } from "@/context/AppContext";
 
 const ResumeAnalyzer = () => {
   const [open, setOpen] = useState(false);
