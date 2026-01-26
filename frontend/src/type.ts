@@ -1,32 +1,29 @@
-export interface jobOptions {
+export interface JobOption {
   title: string;
   responsibilities: string;
   why: string;
 }
-export interface Skills {
+
+export interface Skill {
   title: string;
   why: string;
   how: string;
 }
 
-export interface skillsToLearn {
+export interface SkillCategory {
   category: string;
-  skills: Skills[];
+  skills: Skill[];
 }
 
 export interface LearningApproach {
   title: string;
-  points: [];
-}
-export interface SkillCategory {
-  category: string;
-  skills: skillsToLearn[];
+  points: string[];
 }
 
-export interface CarrerGuideResponse {
+export interface CareerGuideResponse {
   summary: string;
-  jobOptions: jobOptions[];
-  skillsToLearn: skillsToLearn[];
+  jobOptions: JobOption[];
+  skillsToLearn: SkillCategory[];
   learningApproach: LearningApproach;
 }
 
