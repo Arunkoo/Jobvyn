@@ -20,16 +20,18 @@ import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { ModeToggle } from "./mode-toggle";
 import { useAppData } from "@/context/AppContext";
+import { log } from "console";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const { isAuth, user, setIsAuth, setUser, loading } = useAppData();
+  const { isAuth, user, setIsAuth, setUser, loading, logoutUser } =
+    useAppData();
   const toggleMenu = () => {
     setIsOpen(!isOpen);
   };
 
   const logoutHandler = () => {
-    //TODO:
+    logoutUser();
   };
 
   return (
