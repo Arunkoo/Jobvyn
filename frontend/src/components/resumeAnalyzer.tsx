@@ -24,6 +24,7 @@ import axios from "axios";
 import { ResumeAnalysisResponse } from "@/type";
 import { Badge } from "./ui/badge";
 import { utils_service_url } from "@/context/AppContext";
+import toast from "react-hot-toast";
 
 const ResumeAnalyzer = () => {
   const [open, setOpen] = useState(false);
@@ -36,11 +37,11 @@ const ResumeAnalyzer = () => {
     const selectedFile = e.target.files?.[0];
     if (selectedFile) {
       if (selectedFile.type !== "application/pdf") {
-        alert("Please upload a PDF file");
+        toast.error("Please upload a PDF file");
         return;
       }
       if (selectedFile.size > 5 * 1024 * 1024) {
-        alert("File size should be less than 5MB");
+        toast.error("File size should be less than 5MB");
         return;
       }
       setFile(selectedFile);
@@ -58,7 +59,7 @@ const ResumeAnalyzer = () => {
 
   const analyzeResume = async () => {
     if (!file) {
-      alert("Please upload a resume");
+      toast.error("Please upload a resume");
       return;
     }
     setLoading(true);
@@ -71,10 +72,10 @@ const ResumeAnalyzer = () => {
         },
       );
       setResponse(data);
-      alert("Resume analyzed successfully!");
+      toast.success("Resume analyzed successfully!");
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
-      alert(error.response?.data?.message || "Failed to analyze resume");
+      toast.error(error.response?.data?.message || "Failed to analyze resume");
       console.log(error);
     } finally {
       setLoading(false);

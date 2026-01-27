@@ -29,6 +29,7 @@ import { Label } from "./ui/label";
 import { Input } from "./ui/input";
 import { Badge } from "./ui/badge";
 import { utils_service_url } from "@/context/AppContext";
+import toast from "react-hot-toast";
 
 const CareerGuidance = () => {
   const [open, setOpen] = useState(false);
@@ -57,7 +58,7 @@ const CareerGuidance = () => {
 
   const getCareerGuidance = async () => {
     if (skill.length === 0) {
-      alert("Please add at least one skill.");
+      toast.error("Please add at least one skill.");
       return;
     }
 
@@ -68,8 +69,9 @@ const CareerGuidance = () => {
         { skill: skill },
       );
       setResponse(data);
+      toast.success("Career guidance generated successfully!");
     } catch (error: any) {
-      alert(error.response?.data?.message);
+      toast.error(error.response?.data?.message);
     } finally {
       setLoading(false);
     }

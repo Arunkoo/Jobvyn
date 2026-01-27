@@ -47,7 +47,7 @@ export const registerUser = TryCatch(async (req, res, next) => {
     if (!file) {
       throw new ErrorHandler(
         400,
-        "Please upload a valid resume file to authenticate."
+        "Please upload a valid resume file to authenticate.",
       );
     }
 
@@ -59,7 +59,7 @@ export const registerUser = TryCatch(async (req, res, next) => {
 
     const { data } = await axios.post(
       `${process.env.UPLOAD_SERVICE_URL}/api/utils/upload`,
-      { buffer: fileBuffer.content }
+      { buffer: fileBuffer.content },
     );
 
     //log for bug
@@ -81,12 +81,12 @@ export const registerUser = TryCatch(async (req, res, next) => {
     process.env.JWT_SECRET as string,
     {
       expiresIn: "15d",
-    }
+    },
   );
 
   return res.status(201).json({
     success: true,
-    message: "✅User registered successfully",
+    message: "User registered successfully",
     registeredUser,
     token,
   });
@@ -137,12 +137,12 @@ export const loginUser = TryCatch(async (req, res, next) => {
     process.env.JWT_SECRET as string,
     {
       expiresIn: "15d",
-    }
+    },
   );
 
   return res.status(200).json({
     success: true,
-    message: "✅User LoggedIn successfully",
+    message: "User LoggedIn successfully",
     userObject,
     token,
   });
@@ -174,7 +174,7 @@ export const forgotPassword = TryCatch(async (req, res, next) => {
       type: "reset",
     },
     process.env.JWT_SECRET as string,
-    { expiresIn: "10m" }
+    { expiresIn: "10m" },
   );
 
   const resetLink = `${process.env.FRONTEND_URL}/reset/${resetToken}`;
