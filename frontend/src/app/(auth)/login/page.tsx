@@ -19,6 +19,7 @@ import {
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import Loading from "@/components/loading";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
@@ -27,6 +28,9 @@ const LoginPage = () => {
   const [btnLoading, setBtnLoading] = useState(false);
 
   const { isAuth, setUser, loading, setIsAuth } = useAppData();
+  if (loading) {
+    return <Loading />;
+  }
   if (isAuth) return redirect("/");
 
   const submitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
