@@ -19,11 +19,11 @@ import {
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { ModeToggle } from "./mode-toggle";
+import { useAppData } from "@/context/AppContext";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const isAuth = true; //TODO: replace with real auth check
-
+  const { isAuth, user, setIsAuth, setUser, loading } = useAppData();
   const toggleMenu = () => {
     setIsOpen(!isOpen);
   };
@@ -95,79 +95,89 @@ const Navbar = () => {
             </Button>
 
             {/* Auth Section */}
-            {isAuth ? (
-              <Popover>
-                <PopoverTrigger asChild>
-                  <button className="flex items-center gap-2 rounded-full border border-gray-200 dark:border-slate-700 px-3 py-1.5 hover:bg-gray-50 dark:hover:bg-slate-800 transition-colors cursor-pointer">
-                    <Avatar className="h-7 w-7">
-                      <AvatarFallback className="bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300 text-xs">
-                        AK
-                      </AvatarFallback>
-                    </Avatar>
-                    <div className="flex flex-col items-start">
-                      <span className="text-xs font-medium text-gray-900 dark:text-white">
-                        Arun
-                      </span>
-                      <span className="text-xs text-gray-500 dark:text-slate-400">
-                        arunkoo072@gmail.com
-                      </span>
-                    </div>
-                    <ChevronDown className="h-4 w-4 text-gray-500 dark:text-slate-400" />
-                  </button>
-                </PopoverTrigger>
-                <PopoverContent
-                  className="w-56 p-2 border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900"
-                  align="end"
-                  sideOffset={8}
-                >
-                  <div className="px-3 py-2 mb-2 border-b border-gray-100 dark:border-slate-800">
+            {loading ? (
+              ""
+            ) : (
+              <>
+                {isAuth ? (
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <button className="flex items-center gap-2 rounded-full border border-gray-200 dark:border-slate-700 px-3 py-1.5 hover:bg-gray-50 dark:hover:bg-slate-800 transition-colors cursor-pointer">
+                        <Avatar className="h-7 w-7">
+                          <AvatarImage
+                            src={user ? (user.profile_pic as string) : ""}
+                            alt={user ? user.name : "User Avatar"}
+                          />
+                          <AvatarFallback className="bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300 text-xs">
+                            {user?.name?.charAt(0).toUpperCase() || "U"}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div className="flex flex-col items-start">
+                          <span className="text-xs font-medium text-gray-900 dark:text-white">
+                            {user?.name || "User"}
+                          </span>
+                          <span className="text-xs text-gray-500 dark:text-slate-400">
+                            {user?.email || ""}
+                          </span>
+                        </div>
+                        <ChevronDown className="h-4 w-4 text-gray-500 dark:text-slate-400" />
+                      </button>
+                    </PopoverTrigger>
+                    <PopoverContent
+                      className="w-56 p-2 border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900"
+                      align="end"
+                      sideOffset={8}
+                    >
+                      {/* <div className="px-3 py-2 mb-2 border-b border-gray-100 dark:border-slate-800">
                     <p className="text-sm font-semibold text-gray-900 dark:text-white">
                       Arun
                     </p>
                     <p className="text-xs text-gray-500 dark:text-slate-400 truncate">
                       arunkoo072@gmail.com
                     </p>
+                  </div> */}
+                      <Link href={"/account"}>
+                        <Button
+                          variant="ghost"
+                          className="w-full justify-start gap-2 text-sm cursor-pointer hover:bg-gray-100 dark:hover:bg-slate-800"
+                        >
+                          <User className="h-4 w-4" />
+                          My Account
+                        </Button>
+                      </Link>
+                      <Button
+                        variant="ghost"
+                        className="w-full justify-start gap-2 text-sm mt-1 cursor-pointer hover:bg-gray-100 dark:hover:bg-slate-800 text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300"
+                        onClick={logoutHandler}
+                      >
+                        <LogOut className="h-4 w-4" />
+                        Sign Out
+                      </Button>
+                    </PopoverContent>
+                  </Popover>
+                ) : (
+                  <div className="flex items-center gap-2">
+                    <Link href={"/login"}>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="gap-2 border-gray-200 dark:border-slate-700 hover:bg-gray-50 dark:hover:bg-slate-800 cursor-pointer"
+                      >
+                        <LogIn className="h-4 w-4" />
+                        Sign In
+                      </Button>
+                    </Link>
+                    <Link href={"/register"}>
+                      <Button
+                        size="sm"
+                        className="gap-2 bg-linear-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-sm hover:shadow cursor-pointer"
+                      >
+                        Get Started
+                      </Button>
+                    </Link>
                   </div>
-                  <Link href={"/account"}>
-                    <Button
-                      variant="ghost"
-                      className="w-full justify-start gap-2 text-sm cursor-pointer hover:bg-gray-100 dark:hover:bg-slate-800"
-                    >
-                      <User className="h-4 w-4" />
-                      My Account
-                    </Button>
-                  </Link>
-                  <Button
-                    variant="ghost"
-                    className="w-full justify-start gap-2 text-sm mt-1 cursor-pointer hover:bg-gray-100 dark:hover:bg-slate-800 text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300"
-                    onClick={logoutHandler}
-                  >
-                    <LogOut className="h-4 w-4" />
-                    Sign Out
-                  </Button>
-                </PopoverContent>
-              </Popover>
-            ) : (
-              <div className="flex items-center gap-2">
-                <Link href={"/login"}>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="gap-2 border-gray-200 dark:border-slate-700 hover:bg-gray-50 dark:hover:bg-slate-800 cursor-pointer"
-                  >
-                    <LogIn className="h-4 w-4" />
-                    Sign In
-                  </Button>
-                </Link>
-                <Link href={"/register"}>
-                  <Button
-                    size="sm"
-                    className="gap-2 bg-linear-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-sm hover:shadow cursor-pointer"
-                  >
-                    Get Started
-                  </Button>
-                </Link>
-              </div>
+                )}
+              </>
             )}
 
             {/* Theme Toggle */}
@@ -237,61 +247,71 @@ const Navbar = () => {
 
             {/* Mobile Auth Section */}
             <div className="pt-2 mt-2 border-t border-gray-100 dark:border-slate-800">
-              {isAuth ? (
-                <>
-                  {/* <div className="flex items-center gap-3 px-3 py-3 mb-2">
-                    <Avatar className="h-10 w-10">
-                      <AvatarFallback className="bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300">
-                        AK
-                      </AvatarFallback>
-                    </Avatar>
-                    <div>
-                      <p className="text-sm font-semibold text-gray-900 dark:text-white">
-                        Arun
-                      </p>
-                      <p className="text-xs text-gray-500 dark:text-slate-400">
-                        arunkoo072@gmail.com
-                      </p>
-                    </div>
-                  </div> */}
-                  <Link href={"/account"} onClick={toggleMenu}>
-                    <Button
-                      variant="ghost"
-                      className="w-full justify-start gap-3 h-12 text-gray-700 hover:text-blue-600 dark:text-slate-300 dark:hover:text-blue-400 cursor-pointer"
-                    >
-                      <User className="h-5 w-5" />
-                      My Account
-                    </Button>
-                  </Link>
-                  <Button
-                    variant="ghost"
-                    className="w-full justify-start gap-3 h-12 text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 cursor-pointer"
-                    onClick={() => {
-                      logoutHandler();
-                      toggleMenu();
-                    }}
-                  >
-                    <LogOut className="h-5 w-5" />
-                    Sign Out
-                  </Button>
-                </>
+              {loading ? (
+                ""
               ) : (
-                <div className="space-y-2">
-                  <Link href={"/login"} onClick={toggleMenu}>
-                    <Button
-                      variant="outline"
-                      className="w-full justify-center gap-3 h-12 border-gray-200 dark:border-slate-700 hover:bg-gray-50 dark:hover:bg-slate-800 cursor-pointer"
-                    >
-                      <LogIn className="h-5 w-5" />
-                      Sign In
-                    </Button>
-                  </Link>
-                  <Link href={"/register"} onClick={toggleMenu}>
-                    <Button className="w-full justify-center gap-3 h-12 bg-linear-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-sm hover:shadow cursor-pointer">
-                      Get Started
-                    </Button>
-                  </Link>
-                </div>
+                <>
+                  {isAuth ? (
+                    <>
+                      <div className="flex items-center gap-3 px-3 py-3 mb-2">
+                        <Avatar className="h-10 w-10">
+                          <AvatarImage
+                            src={user ? (user.profile_pic as string) : ""}
+                            alt={user ? user.name : "User Avatar"}
+                          />
+                          <AvatarFallback className="bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300">
+                            {user?.name?.charAt(0).toUpperCase() || "U"}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div>
+                          <p className="text-sm font-semibold text-gray-900 dark:text-white">
+                            {user?.name || "User"}
+                          </p>
+                          <p className="text-xs text-gray-500 dark:text-slate-400">
+                            {user?.email || ""}
+                          </p>
+                        </div>
+                      </div>
+                      <Link href={"/account"} onClick={toggleMenu}>
+                        <Button
+                          variant="ghost"
+                          className="w-full justify-start gap-3 h-12 text-gray-700 hover:text-blue-600 dark:text-slate-300 dark:hover:text-blue-400 cursor-pointer"
+                        >
+                          <User className="h-5 w-5" />
+                          My Account
+                        </Button>
+                      </Link>
+                      <Button
+                        variant="ghost"
+                        className="w-full justify-start gap-3 h-12 text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 cursor-pointer"
+                        onClick={() => {
+                          logoutHandler();
+                          toggleMenu();
+                        }}
+                      >
+                        <LogOut className="h-5 w-5" />
+                        Sign Out
+                      </Button>
+                    </>
+                  ) : (
+                    <div className="space-y-2">
+                      <Link href={"/login"} onClick={toggleMenu}>
+                        <Button
+                          variant="outline"
+                          className="w-full justify-center gap-3 h-12 border-gray-200 dark:border-slate-700 hover:bg-gray-50 dark:hover:bg-slate-800 cursor-pointer"
+                        >
+                          <LogIn className="h-5 w-5" />
+                          Sign In
+                        </Button>
+                      </Link>
+                      <Link href={"/register"} onClick={toggleMenu}>
+                        <Button className="w-full justify-center gap-3 h-12 bg-linear-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-sm hover:shadow cursor-pointer">
+                          Get Started
+                        </Button>
+                      </Link>
+                    </div>
+                  )}
+                </>
               )}
             </div>
           </div>
