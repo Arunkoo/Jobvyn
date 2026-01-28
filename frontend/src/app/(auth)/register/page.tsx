@@ -258,12 +258,12 @@ const RegisterPage = () => {
                         <button
                           type="button"
                           onClick={() => setShowPassword(!showPassword)}
-                          className="absolute right-2.5 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-slate-500 hover:text-gray-600 dark:hover:text-slate-300"
+                          className="absolute cursor-pointer right-2.5 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-slate-500 hover:text-gray-600 dark:hover:text-slate-300"
                         >
                           {showPassword ? (
-                            <EyeOff size={16} />
-                          ) : (
                             <Eye size={16} />
+                          ) : (
+                            <EyeOff size={16} />
                           )}
                         </button>
                       </div>
@@ -278,7 +278,7 @@ const RegisterPage = () => {
                         onClick={() =>
                           setShowJobseekerFields(!showJobseekerFields)
                         }
-                        className="flex items-center gap-2 text-sm text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 mb-2"
+                        className=" cursor-pointer flex items-center gap-2 text-sm text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 mb-2"
                       >
                         {showJobseekerFields ? (
                           <ChevronUp size={16} />
