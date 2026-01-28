@@ -64,7 +64,7 @@ export const updateUserProfile = TryCatch(
     const user = req.user;
 
     if (!user) {
-      throw new ErrorHandler(401, "❌ Aunthentication required");
+      throw new ErrorHandler(401, " Aunthentication required");
     }
 
     const { name, phoneNumber, bio } = req.body || {};
@@ -86,7 +86,7 @@ export const updateUserProfile = TryCatch(
     `;
 
     res.json({
-      message: "✅ Profile Updated succesfully",
+      message: " Profile Updated succesfully",
       updatedUser,
     });
   },
@@ -99,12 +99,12 @@ export const updateProfilePic = TryCatch(
     const user = req.user;
 
     if (!user) {
-      throw new ErrorHandler(401, "❌ Authentication required");
+      throw new ErrorHandler(401, " Authentication required");
     }
 
     const file = req.file;
     if (!file) {
-      throw new ErrorHandler(401, "❌ Image is not provided");
+      throw new ErrorHandler(401, " Image is not provided");
     }
 
     const oldPublicId = user.profile_pic_public_id;
@@ -112,7 +112,7 @@ export const updateProfilePic = TryCatch(
     const fileBuffer = getBuffer(file);
 
     if (!fileBuffer || !fileBuffer.content) {
-      throw new ErrorHandler(500, "❌ Failed to generate buffer.");
+      throw new ErrorHandler(500, " Failed to generate buffer.");
     }
 
     const { data: uploadResult } = await axios.post(
@@ -132,7 +132,7 @@ export const updateProfilePic = TryCatch(
     `;
 
     res.json({
-      message: "✅ Profile Image Updated Succesfully",
+      message: "Profile Image Updated Succesfully",
       updatedUser,
     });
   },
@@ -144,19 +144,19 @@ export const updateResume = TryCatch(
     const user = req.user;
 
     if (!user) {
-      throw new ErrorHandler(401, "❌ Authentication required");
+      throw new ErrorHandler(401, "Authentication required");
     }
 
     const file = req.file;
 
     if (!file) {
-      throw new ErrorHandler(401, "❌ pdf file is not provided");
+      throw new ErrorHandler(401, "pdf file is not provided");
     }
 
     const oldPublicId = user.resume_public_id;
     const fileBuffer = getBuffer(file);
     if (!fileBuffer || !fileBuffer.content) {
-      throw new ErrorHandler(500, "❌ Failed to generate buffer.");
+      throw new ErrorHandler(500, "Failed to generate buffer.");
     }
 
     const { data: uploadResult } = await axios.post(
@@ -175,7 +175,7 @@ export const updateResume = TryCatch(
     `;
 
     res.json({
-      message: "✅ Resume Updated Succesfully",
+      message: "Resume Updated Succesfully",
       updatedUser,
     });
   },

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ReactNode } from "react";
 
 export interface JobOption {
@@ -74,8 +75,17 @@ export interface AppContextType {
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
   setIsAuth: React.Dispatch<React.SetStateAction<boolean>>;
   logoutUser: () => Promise<void>;
+
+  updateProfilePic: (fromData: any) => Promise<void>;
+  updateResume: (FormData: any) => Promise<void>;
+  updateUser: (name: string, phoneNumber: string, bio: string) => Promise<void>;
 }
 
 export interface AppProviderProps {
   children: ReactNode;
+}
+
+export interface AccountProps {
+  user: User | null;
+  isYourAccount: boolean;
 }

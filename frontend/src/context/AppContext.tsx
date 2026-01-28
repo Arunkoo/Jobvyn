@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { AppContextType, AppProviderProps, User } from "@/type";
@@ -41,7 +42,75 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
       setLoading(false);
     }
   }
+  // Update Profile Pic..
 
+  async function updateProfilePic(formData: any) {
+    setLoading(true);
+    try {
+      const { data } = await axios.put(
+        `${user_service_url}/api/user/update/profile_pic`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+
+      toast.success(data.message);
+      fetchUserData();
+    } catch (error: any) {
+      toast.error(error.response.data.message);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  // resume Update..
+  async function updateResume(formData: any) {
+    setLoading(true);
+    try {
+      const { data } = await axios.put(
+        `${user_service_url}/api/user/update/resume`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+
+      toast.success(data.message);
+      fetchUserData();
+    } catch (error: any) {
+      toast.error(error.response.data.message);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  //update bio,name, phoneNumber....
+  async function updateUser(name: string, phoneNumber: string, bio: string) {
+    setBtnLoading(true);
+    try {
+      const { data } = await axios.put(
+        `${user_service_url}/api/user/update/profile`,
+        { name, phoneNumber, bio },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+
+      toast.success(data.message);
+      fetchUserData();
+    } catch (error: any) {
+      toast.error(error.response.data.message);
+    } finally {
+      setBtnLoading(false);
+    }
+  }
   //logout function..
   async function logoutUser() {
     if (!token) return;
@@ -66,6 +135,9 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
         setLoading,
         setUser,
         logoutUser,
+        updateProfilePic,
+        updateResume,
+        updateUser,
       }}
     >
       {children}
