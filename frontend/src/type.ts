@@ -75,6 +75,7 @@ export interface AppContextType {
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
   setIsAuth: React.Dispatch<React.SetStateAction<boolean>>;
   logoutUser: () => Promise<void>;
+  addSkill: (skill: string) => Promise<void>;
 
   updateProfilePic: (fromData: any) => Promise<void>;
   updateResume: (FormData: any) => Promise<void>;

@@ -28,7 +28,7 @@ import {
   UserIcon,
 } from "lucide-react";
 
-import Image from "next/image";
+// import Image from "next/image";
 import Link from "next/link";
 import React, { ChangeEvent, useRef, useState } from "react";
 import toast from "react-hot-toast";

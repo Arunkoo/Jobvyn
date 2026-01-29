@@ -111,6 +111,25 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
       setBtnLoading(false);
     }
   }
+
+  //removeSkillHandler....
+  async function addSkill(skill: string) {
+    setBtnLoading(true);
+    try {
+      const { data } = await axios.post(
+        `${user_service_url}/api/user/skill/add`,
+        { skill },
+        { headers: { Authorization: `Bearer ${token}` } },
+      );
+
+      toast.success(data.message);
+      fetchUserData();
+    } catch (error: any) {
+      toast.error(error.response.data.message);
+    } finally {
+      setBtnLoading(false);
+    }
+  }
   //logout function..
   async function logoutUser() {
     if (!token) return;
@@ -138,6 +157,7 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
         updateProfilePic,
         updateResume,
         updateUser,
+        addSkill,
       }}
     >
       {children}
