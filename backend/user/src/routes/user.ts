@@ -26,7 +26,7 @@ userRoutes.put(
 );
 userRoutes.put("/update/resume", isAuthenticated, uploadFile, updateResume);
 userRoutes.post("/skill/add", isAuthenticated, addSkillToUser);
-userRoutes.delete("/skill/delete", isAuthenticated, deleteSkillFromUser);
+userRoutes.put("/skill/delete", isAuthenticated, deleteSkillFromUser);
 userRoutes.post("/apply/job", isAuthenticated, applyForJob);
 userRoutes.get("/application/all", isAuthenticated, getAllApplication);
 export default userRoutes;

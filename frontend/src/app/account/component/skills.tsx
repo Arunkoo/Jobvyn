@@ -1,14 +1,21 @@
 "use client";
-import { Card, CardDescription, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import { useAppData } from "@/context/AppContext";
 import { AccountProps } from "@/type";
-import { Award } from "lucide-react";
+import { Award, Plus, Sparkles, X } from "lucide-react";
 import React, { useState } from "react";
 import toast from "react-hot-toast";
 
 const Skills: React.FC<AccountProps> = ({ isYourAccount, user }) => {
   const [skill, setSkill] = useState("");
-  const { addSkill } = useAppData();
+  const { addSkill, btnLoading, removeSkill } = useAppData();
   //   add
   const addSkillHandler = () => {
     if (!skill.trim()) {
@@ -16,8 +23,7 @@ const Skills: React.FC<AccountProps> = ({ isYourAccount, user }) => {
       return;
     }
     //addSkill..
-    addSkill(skill);
-    setSkill("");
+    addSkill(skill, setSkill);
   };
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
@@ -27,6 +33,7 @@ const Skills: React.FC<AccountProps> = ({ isYourAccount, user }) => {
   // remove
   const removeSkillHandler = (skillToRemove: string) => {
     if (confirm(`Are you sure you want to remove ${skillToRemove} ?`)) {
+      removeSkill(skillToRemove);
     }
   };
   return (
@@ -37,8 +44,6 @@ const Skills: React.FC<AccountProps> = ({ isYourAccount, user }) => {
             <div className="h-10 w-10 rounded-lg bg-blue-100 dark:bg-blue-900 flex items-center justify-center">
               <Award size={20} className="text-blue-600" />
             </div>
-          </div>
-          <div>
             <CardTitle className="text-2xl text-white">
               {isYourAccount ? "YourSkills" : "UserSkills"}
             </CardTitle>
@@ -49,6 +54,62 @@ const Skills: React.FC<AccountProps> = ({ isYourAccount, user }) => {
             )}
           </div>
         </div>
+
+        {/* Add Skills Input */}
+        {isYourAccount && (
+          <div className="flex gap-3 flex-col sm:flex-row">
+            <div className="relative flex-1">
+              <Sparkles
+                size={18}
+                className="absolute left-3 top-1/2 -translate-y-1/2 opacity-50"
+              />
+              <Input
+                type="text"
+                placeholder="e.g React, Node.js, Python..."
+                className="h-11 pl-10 bg-background"
+                value={skill}
+                onChange={(e) => setSkill(e.target.value)}
+                onKeyUp={handleKeyPress}
+              />
+            </div>
+            <Button
+              onClick={addSkillHandler}
+              className="h-11 gap-2 px-6"
+              disabled={!skill.trim() || btnLoading}
+            >
+              <Plus size={18} />
+              Add Skills
+            </Button>
+          </div>
+        )}
+
+        {/* skill display */}
+        <CardContent className="p-6">
+          {user?.skills && user.skills.length > 0 ? (
+            <div className="flex flex-wrap gap-3">
+              {user.skills.map((e, i) => (
+                <div
+                  key={i}
+                  className="group relative inline-flex items-center gap-2  border-2 rounded-full hover:shadow-sm duration-200 transition-all pl-4 pr-3 py-2"
+                >
+                  <span className="font-medium text-sm">{e}</span>
+                  {isYourAccount && (
+                    <button
+                      title="remove"
+                      className=" cursor-pointer h-6 w-6 rounded-full text-red-500 flex items-center justify-center transistion-all hover:bg-gray-600 hover:scale-110"
+                      value={skill}
+                      onClick={() => removeSkillHandler(e)}
+                    >
+                      <X size={14} />
+                    </button>
+                  )}
+                </div>
+              ))}
+            </div>
+          ) : (
+            <></>
+          )}
+        </CardContent>
       </Card>
     </div>
   );

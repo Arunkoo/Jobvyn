@@ -17,6 +17,9 @@ const Accountpage = () => {
           {user.role === "jobseeker" && (
             <Skills user={user} isYourAccount={true} />
           )}
+          {user.role === "recruiter" && (
+            <Skills user={user} isYourAccount={true} />
+          )}
         </div>
       )}
     </>

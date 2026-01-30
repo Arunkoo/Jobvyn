@@ -187,13 +187,13 @@ export const addSkillToUser = TryCatch(
     const userId = req.user?.user_id;
 
     if (!userId) {
-      throw new ErrorHandler(401, "❌ User Id is Undefined or Null");
+      throw new ErrorHandler(401, " User Id is Undefined or Null");
     }
 
     const { skillName } = req.body;
 
     if (!skillName || skillName.trim() === "") {
-      throw new ErrorHandler(400, "❌ Please Provide atleast one skill");
+      throw new ErrorHandler(400, " Please Provide atleast one skill");
     }
 
     const normalizedSkill = skillName.trim().toLowerCase();
@@ -205,7 +205,7 @@ export const addSkillToUser = TryCatch(
         await sql`SELECT user_id FROM users WHERE user_id = ${userId}`;
 
       if (user.length === 0) {
-        throw new ErrorHandler(404, "❌ User not found");
+        throw new ErrorHandler(404, " User not found");
       }
       //query below hanlde duplicate rows while returning id properly..
       const [skill] =
@@ -228,12 +228,12 @@ export const addSkillToUser = TryCatch(
 
     if (!isSkillAlreadyPresent) {
       return res.status(200).json({
-        message: "❌ Skill already exists.",
+        message: " Skill already exists.",
       });
     }
 
     res.json({
-      message: `✅ Skill ${normalizedSkill} is added successfully`,
+      message: ` Skill ${normalizedSkill} is added successfully`,
     });
   },
 );
@@ -244,16 +244,13 @@ export const deleteSkillFromUser = TryCatch(
     const user = req.user;
 
     if (!user) {
-      throw new ErrorHandler(401, "❌ Authentication Required");
+      throw new ErrorHandler(401, " Authentication Required");
     }
 
     const { skillName } = req.body;
 
     if (!skillName || skillName.trim() === "") {
-      throw new ErrorHandler(
-        401,
-        "❌ Please Select atleast one skill to delete",
-      );
+      throw new ErrorHandler(401, " Please Select atleast one skill to delete");
     }
 
     const normalizedSkill = skillName.trim().toLowerCase(); //to avoid duplicate and maintain proper floe..
@@ -262,11 +259,11 @@ export const deleteSkillFromUser = TryCatch(
       await sql`DELETE FROM user_skills WHERE user_id = ${user.user_id} AND skill_id = (SELECT skill_id FROM skills WHERE name = ${normalizedSkill}) RETURNING user_id;`;
 
     if (result.length === 0) {
-      throw new ErrorHandler(404, `❌ Skill ${normalizedSkill} was not found`);
+      throw new ErrorHandler(404, ` Skill ${normalizedSkill} was not found`);
     }
 
     res.json({
-      message: `✅ Skill ${normalizedSkill} was deleted successfully`,
+      message: ` Skill ${normalizedSkill} was deleted successfully`,
     });
   },
 );

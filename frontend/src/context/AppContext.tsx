@@ -112,17 +112,21 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
     }
   }
 
-  //removeSkillHandler....
-  async function addSkill(skill: string) {
+  //addSkillHandler....
+  async function addSkill(
+    skill: string,
+    setSkill: React.Dispatch<React.SetStateAction<string>>,
+  ) {
     setBtnLoading(true);
     try {
       const { data } = await axios.post(
         `${user_service_url}/api/user/skill/add`,
-        { skill },
+        { skillName: skill },
         { headers: { Authorization: `Bearer ${token}` } },
       );
 
       toast.success(data.message);
+      setSkill("");
       fetchUserData();
     } catch (error: any) {
       toast.error(error.response.data.message);
@@ -130,6 +134,24 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
       setBtnLoading(false);
     }
   }
+
+  //remove skill...
+  async function removeSkill(skill: string) {
+    try {
+      const { data } = await axios.put(
+        `${user_service_url}/api/user/skill/delete`,
+        { skillName: skill },
+        { headers: { Authorization: `Bearer ${token}` } },
+      );
+
+      toast.success(data.message);
+
+      fetchUserData();
+    } catch (error: any) {
+      toast.error(error.response.data.message);
+    }
+  }
+
   //logout function..
   async function logoutUser() {
     if (!token) return;
@@ -158,6 +180,7 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
         updateResume,
         updateUser,
         addSkill,
+        removeSkill,
       }}
     >
       {children}
