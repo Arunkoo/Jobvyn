@@ -38,11 +38,24 @@ const UserAccountPage = () => {
   }, [id]);
   if (loading) return <Loading />;
   return (
-    <div className="w-[90%] md:w-[60%] m-auto">
-      <Info user={user} isYourAccount={false} />
-      {user?.role === "jobseeker" && (
-        <Skills user={user} isYourAccount={false} />
-      )}
+    <div className="min-h-screen bg-linear-to-b from-slate-50 to-white dark:from-slate-950 dark:to-slate-900 py-6 md:py-8 px-4">
+      <div className="max-w-4xl mx-auto">
+        <div className="mb-6 md:mb-8">
+          <h1 className="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white">
+            Profile
+          </h1>
+          <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">
+            View user profile and information
+          </p>
+        </div>
+
+        <div className="space-y-6 md:space-y-8">
+          <Info user={user} isYourAccount={false} />
+          {user?.role === "jobseeker" && (
+            <Skills user={user} isYourAccount={false} />
+          )}
+        </div>
+      </div>
     </div>
   );
 };

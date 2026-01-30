@@ -19,16 +19,12 @@ import {
   CameraIcon,
   Edit,
   FileText,
-  FileTextIcon,
   Mail,
   Notebook,
   NotepadText,
   Phone,
-  PhoneIcon,
-  UserIcon,
 } from "lucide-react";
 
-// import Image from "next/image";
 import Link from "next/link";
 import React, { ChangeEvent, useRef, useState } from "react";
 import toast from "react-hot-toast";
@@ -82,236 +78,246 @@ const Info: React.FC<AccountProps> = ({ isYourAccount, user }) => {
     }
   };
   return (
-    <div className="max-w-5xl mx-auto px-4 py-8">
-      <Card className="overflow-hidden shadow-lg border-2">
-        <div className="h-32 bg-blue-500 relative">
-          <div className="absolute -bottom-16 left-8">
-            <div className="relative group">
-              <div className="w-32 h-32 rounded-full border-4 border-background overflow-hidden shadow-xl bg-background">
-                <img
-                  src={
-                    user?.profile_pic
-                      ? (user?.profile_pic as string)
-                      : "/AvatarForAccountsPage.png"
-                  }
-                  sizes="(max-width: 1024px) 0vw, 50vw"
-                  alt={user?.name ? user.name : "Profile Picture"}
-                  className="w-full h-full object-cover"
-                />
-              </div>
-              {/* edit option..for profile pic */}
-              {isYourAccount && (
-                <>
-                  <Button
-                    variant={"secondary"}
-                    size={"icon"}
-                    onClick={handleClick}
-                    className="cursor-pointer absolute bottom-0 right-0 rounded-full h-10 w-10 shadow-lg"
-                  >
-                    <CameraIcon size={18} />
-                  </Button>
-                  <input
-                    title="file"
-                    type="file"
-                    className="hidden"
-                    accept="image/*"
-                    ref={inputRef}
-                    onChange={changeHandler}
-                  />
-                </>
-              )}
+    <Card className="border border-slate-200 dark:border-slate-800 shadow-sm">
+      {/* Profile header */}
+      <div className="relative h-32 bg-linear-to-r from-blue-50 to-blue-100 dark:from-blue-950/30 dark:to-blue-900/30">
+        <div className="absolute -bottom-10 left-6">
+          <div className="relative">
+            <div className="w-20 h-20 rounded-full border-4 border-white dark:border-slate-900 overflow-hidden bg-white dark:bg-slate-800">
+              <img
+                src={
+                  user?.profile_pic
+                    ? (user?.profile_pic as string)
+                    : "/AvatarForAccountsPage.png"
+                }
+                alt={user?.name ? user.name : "Profile Picture"}
+                className="w-full h-full object-cover"
+              />
             </div>
-          </div>
-        </div>
-        {/* Main Content */}
-        <div className="pt-20 pb-8 px-8">
-          <div className="flex items-start justify-between flex-wrap gap-4">
-            <div className="space-y-1">
-              <div className="flex items-center gap-3">
-                <h1 className="text-3xl font-bold">{user?.name}</h1>
-                {/* edit button */}
-                {isYourAccount && (
-                  <Button
-                    variant={"ghost"}
-                    size={"icon"}
-                    className="h-8 w-8 cursor-pointer"
-                    onClick={handleEditClick}
-                  >
-                    <Edit size={16} />
-                  </Button>
-                )}
-              </div>
 
-              <div className="flex items-center gap-2 text-sm opcaity-70">
-                <Briefcase size={16} />
-                <span className=" capitalize">{user?.role}</span>
-              </div>
-            </div>
-          </div>
-          {/* Bio section */}
-          {user?.role === "jobseeker" && user?.bio && (
-            <div className="mt-6 p-4 rounded-lg border">
-              <div className="flex items-center gap-2 mb-2 text-sm font-medium opacity-70">
-                <FileText size={16} />
-                <span>About</span>
-              </div>
-              <p className="text-base leading-relaxed">{user.bio}</p>
-            </div>
-          )}
-
-          {/* contact Info */}
-          <div className="mt-8">
-            <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
-              <Mail size={20} className="text-blue-600" />
-              Contact Information
-            </h2>
-            <div className="grid md:grid-cols-2 gap-4">
-              {/* Mail */}
-              <div className="flex items-center gap-3 p-4 rounded-lg border hover:border-blue-500 transition-colors">
-                <div className="h-10 w-10 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center">
-                  <Mail size={18} className="text-blue-600" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-xs opacity-70 font-medium">Email</p>
-                  <p className="text-sm truncate">{user?.email}</p>
-                </div>
-              </div>
-              {/*  PhoneNumber*/}
-              <div className="flex items-center gap-3 p-4 rounded-lg border hover:border-blue-500 transition-colors">
-                <div className="h-10 w-10 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center">
-                  <Phone size={18} className="text-blue-600" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-xs opacity-70 font-medium">Phone</p>
-                  <p className="text-sm truncate">{user?.phone_number}</p>
-                </div>
-              </div>
-            </div>
-          </div>
-          {/* resume section */}
-          {user?.role === "jobseeker" && user.resume && isYourAccount && (
-            <div className="mt-8">
-              <h2 className="text-lg font-semibold mt-4 flex items-center gap-2">
-                <Notebook size={20} className="text-blue-600" />
-                Resume
-              </h2>
-              <div className="flex items-center gap-3 p-4 rounded-lg border hover:border-blue-500 transition-colors">
-                <div className="h-12 w-12 rounded-lg bg-red-100 dark:bg-red-900 flex items-center justify-center">
-                  <NotepadText size={20} className="text-red-600" />
-                </div>
-                <div className="flex-1">
-                  <p className="text-sm font-medium">Resume Document</p>
-                  <Link
-                    href={user.resume}
-                    className="text-sm text-blue-500 hover:underline"
-                    target="_blank"
-                  >
-                    View Resume PDF
-                  </Link>
-                </div>
-                {/* edit button */}
+            {isYourAccount && (
+              <>
                 <Button
-                  variant={"outline"}
-                  size={"sm"}
-                  onClick={handleResumeClick}
-                  className="gap-2 cursor-pointer"
+                  variant={"secondary"}
+                  size={"icon"}
+                  onClick={handleClick}
+                  className="cursor-pointer absolute bottom-0 right-0 rounded-full h-7 w-7 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm hover:shadow"
                 >
-                  Update
+                  <CameraIcon
+                    size={14}
+                    className="text-slate-600 dark:text-slate-400"
+                  />
                 </Button>
                 <input
                   title="file"
                   type="file"
-                  ref={resumeRef}
                   className="hidden"
-                  accept="application/pdf"
-                  onChange={changeResumeHandler}
+                  accept="image/*"
+                  ref={inputRef}
+                  onChange={changeHandler}
                 />
+              </>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Main Content */}
+      <div className="pt-12 pb-6 px-6 space-y-6">
+        {/* Name and edit */}
+        <div className="flex items-start justify-between">
+          <div className="space-y-1">
+            <div className="flex items-center gap-3">
+              <h1 className="text-xl font-bold text-slate-900 dark:text-white">
+                {user?.name}
+              </h1>
+              {isYourAccount && (
+                <Button
+                  variant={"ghost"}
+                  size={"sm"}
+                  className="h-7 w-7 p-0 cursor-pointer text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-300"
+                  onClick={handleEditClick}
+                >
+                  <Edit size={14} />
+                </Button>
+              )}
+            </div>
+            <div className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-400">
+              <Briefcase size={14} />
+              <span className="capitalize">{user?.role}</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Bio section */}
+        {user?.role === "jobseeker" && user?.bio && (
+          <div className="space-y-2">
+            <h3 className="text-sm font-medium text-slate-700 dark:text-slate-300 flex items-center gap-2">
+              <FileText size={14} />
+              About
+            </h3>
+            <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+              {user.bio}
+            </p>
+          </div>
+        )}
+
+        {/* Contact Information */}
+        <div className="space-y-4">
+          <h3 className="text-sm font-medium text-slate-700 dark:text-slate-300">
+            Contact Information
+          </h3>
+          <div className="grid md:grid-cols-2 gap-3">
+            {/* Email */}
+            <div className="flex items-center gap-3 p-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/50">
+              <div className="h-8 w-8 rounded-md bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
+                <Mail size={14} className="text-blue-600 dark:text-blue-400" />
+              </div>
+              <div className="min-w-0">
+                <p className="text-xs text-slate-500 dark:text-slate-400">
+                  Email
+                </p>
+                <p className="text-sm font-medium text-slate-800 dark:text-slate-200 truncate">
+                  {user?.email}
+                </p>
               </div>
             </div>
-          )}
-        </div>
-      </Card>
 
-      {/* Dialog Box for edit name, bio, phoneNumber */}
+            {/* Phone */}
+            <div className="flex items-center gap-3 p-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/50">
+              <div className="h-8 w-8 rounded-md bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center">
+                <Phone
+                  size={14}
+                  className="text-purple-600 dark:text-purple-400"
+                />
+              </div>
+              <div className="min-w-0">
+                <p className="text-xs text-slate-500 dark:text-slate-400">
+                  Phone
+                </p>
+                <p className="text-sm font-medium text-slate-800 dark:text-slate-200 truncate">
+                  {user?.phone_number || "Not provided"}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Resume section */}
+        {user?.role === "jobseeker" && user.resume && isYourAccount && (
+          <div className="space-y-3">
+            <h3 className="text-sm font-medium text-slate-700 dark:text-slate-300 flex items-center gap-2">
+              <Notebook size={14} />
+              Resume
+            </h3>
+            <div className="flex items-center justify-between p-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/50">
+              <div className="flex items-center gap-3">
+                <div className="h-8 w-8 rounded-md bg-red-100 dark:bg-red-900/30 flex items-center justify-center">
+                  <NotepadText
+                    size={14}
+                    className="text-red-600 dark:text-red-400"
+                  />
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-slate-800 dark:text-slate-200">
+                    Resume Document
+                  </p>
+                  <Link
+                    href={user.resume}
+                    className="text-xs text-blue-600 dark:text-blue-400 hover:underline"
+                    target="_blank"
+                  >
+                    View PDF
+                  </Link>
+                </div>
+              </div>
+              <Button
+                variant={"outline"}
+                size={"sm"}
+                onClick={handleResumeClick}
+                className="text-xs h-8 px-3 cursor-pointer"
+              >
+                Update
+              </Button>
+            </div>
+            <input
+              title="file"
+              type="file"
+              ref={resumeRef}
+              className="hidden"
+              accept="application/pdf"
+              onChange={changeResumeHandler}
+            />
+          </div>
+        )}
+      </div>
+
+      {/* Edit Profile Dialog */}
       <Dialog>
         <DialogTrigger asChild>
           <Button ref={editRef} variant={"outline"} className="hidden">
             Edit Profile
           </Button>
         </DialogTrigger>
-        <DialogContent className="sm:max-w-125">
+        <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle className="text-2xl">Edit Profile</DialogTitle>
+            <DialogTitle className="text-lg font-semibold">
+              Edit Profile
+            </DialogTitle>
           </DialogHeader>
-          <div className="space-y-5 py-4">
+          <div className="space-y-4 py-4">
             <div className="space-y-2">
-              <Label
-                htmlFor="name"
-                className="text-sm font-medium flex items-center gap-2"
-              >
-                <UserIcon size={16} />
+              <Label htmlFor="name" className="text-sm font-medium">
                 Full Name
               </Label>
               <Input
                 id="name"
-                type="text"
-                placeholder="Enter Your Name"
-                className="h-11"
+                placeholder="Enter your name"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
+                className="h-9 text-sm"
               />
             </div>
             <div className="space-y-2">
-              <Label
-                htmlFor="phone"
-                className="text-sm font-medium flex items-center gap-2"
-              >
-                <PhoneIcon size={16} />
-                Phone
+              <Label htmlFor="phone" className="text-sm font-medium">
+                Phone Number
               </Label>
               <Input
                 id="phone"
-                type="number"
-                placeholder="Enter Your phone Number"
-                className="h-11"
+                type="tel"
+                placeholder="Enter phone number"
                 value={phoneNumber}
                 onChange={(e) => setPhoneNumber(e.target.value)}
+                className="h-9 text-sm"
               />
             </div>
             {user?.role === "jobseeker" && isYourAccount && (
               <div className="space-y-2">
-                <Label
-                  htmlFor="bio"
-                  className="text-sm font-medium flex items-center gap-2"
-                >
-                  <FileTextIcon size={16} />
+                <Label htmlFor="bio" className="text-sm font-medium">
                   Bio
                 </Label>
-                <Input
+                <textarea
                   id="bio"
-                  type="text"
-                  placeholder="Enter Your bio"
-                  className="h-11"
+                  placeholder="Tell about yourself..."
                   value={bio}
                   onChange={(e) => setBio(e.target.value)}
+                  className="w-full min-h-24 px-3 py-2 rounded-md border border-slate-200 dark:border-slate-700 bg-transparent text-sm resize-none"
                 />
               </div>
             )}
           </div>
-
           <DialogFooter>
             <Button
               disabled={btnLoading}
               onClick={updateProfileHandler}
-              className="w-full h-11"
-              type="submit"
+              className="w-full h-9 text-sm bg-blue-600 hover:bg-blue-700"
             >
-              {btnLoading ? "Saving Changes..." : "SaveChanges"}
+              {btnLoading ? "Saving..." : "Save Changes"}
             </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </div>
+    </Card>
   );
 };
 
