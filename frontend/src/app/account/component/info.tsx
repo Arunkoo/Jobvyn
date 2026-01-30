@@ -80,7 +80,7 @@ const Info: React.FC<AccountProps> = ({ isYourAccount, user }) => {
   return (
     <Card className="border border-slate-200 dark:border-slate-800 shadow-sm">
       {/* Profile header */}
-      <div className="relative h-32 bg-linear-to-r from-blue-50 to-blue-100 dark:from-blue-950/30 dark:to-blue-900/30">
+      <div className="relative h-32 bg-linear-to-r from-blue-500 to-purple-500 dark:from-blue-950/30 dark:to-blue-900/30">
         <div className="absolute -bottom-10 left-6">
           <div className="relative">
             <div className="w-20 h-20 rounded-full border-4 border-white dark:border-slate-900 overflow-hidden bg-white dark:bg-slate-800">
