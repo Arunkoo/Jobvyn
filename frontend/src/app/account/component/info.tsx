@@ -83,7 +83,7 @@ const Info: React.FC<AccountProps> = ({ isYourAccount, user }) => {
       <div className="relative h-32 bg-linear-to-r from-blue-500 to-purple-500 dark:from-blue-950/30 dark:to-purple-900/30">
         <div className="absolute -bottom-10 left-6">
           <div className="relative">
-            <div className="w-20 h-20 rounded-full border-4 border-white dark:border-slate-900 overflow-hidden bg-white dark:bg-slate-800">
+            <div className="w-28 h-28 rounded-full border-4 border-white dark:border-slate-900 overflow-hidden bg-white dark:bg-slate-800">
               <img
                 src={
                   user?.profile_pic
