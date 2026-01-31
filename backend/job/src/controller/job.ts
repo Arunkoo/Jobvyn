@@ -84,7 +84,7 @@ export const createCompany = TryCatch(
     `;
 
     res.json({
-      message: "✅ Company created successfully",
+      message: "Company created successfully",
       newCompany,
     });
   },
@@ -110,7 +110,7 @@ export const deleteCompany = TryCatch(
     await sql`DELETE FROM companies WHERE company_id = ${companyId}`;
 
     res.json({
-      message: "✅ Company and all associated jobs have been deleted",
+      message: "Company and all associated jobs have been deleted",
     });
   },
 );
