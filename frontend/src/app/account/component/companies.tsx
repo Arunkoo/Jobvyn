@@ -252,7 +252,7 @@ const Companies = () => {
                 {companies.length < 4 && (
                   <Button
                     onClick={openDialog}
-                    className="gap-2 cursor-pointer bg-blue-600 hover:bg-blue-700 h-9"
+                    className="gap-2 cursor-pointer bg-linear-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
                     size="sm"
                   >
                     <Plus size={16} />
@@ -341,7 +341,7 @@ const Companies = () => {
             <Button
               disabled={btnLoading}
               onClick={addCompaniesHandler}
-              className="h-9 text-sm bg-blue-600 hover:bg-blue-700"
+              className="h-9 text-sm bg-linear-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
               size="sm"
             >
               {btnLoading ? "Saving..." : "Add Company"}
