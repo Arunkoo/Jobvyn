@@ -52,7 +52,7 @@ export interface ResumeAnalysisResponse {
 
 // ..MAIN AUTH states types.....//
 export interface User {
-  user_id: string;
+  user_id: number;
   name: string;
   email: string;
   phone_number: string;

@@ -1,4 +1,3 @@
-/* eslint-disable @next/next/no-img-element */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use Client";
 
@@ -23,6 +22,7 @@ import {
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import Image from "next/image";
 
 const Companies = () => {
   const addRef = useRef<HTMLButtonElement | null>(null);
@@ -162,10 +162,11 @@ const Companies = () => {
                 <div className="flex items-start justify-between gap-3">
                   {/* Logo and Basic Info */}
                   <div className="flex items-start gap-3 flex-1 min-w-0">
-                    <div className="h-12 w-12 rounded-lg border border-slate-200 dark:border-slate-800 overflow-hidden bg-white dark:bg-slate-800 shrink-0">
-                      <img
+                    <div className="h-12 w-12 relative rounded-lg border border-slate-200 dark:border-slate-800 overflow-hidden bg-white dark:bg-slate-800 shrink-0">
+                      <Image
                         src={c.logo}
                         alt={c.name}
+                        fill
                         className="w-full h-full object-cover"
                       />
                     </div>

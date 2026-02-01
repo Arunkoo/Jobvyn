@@ -161,7 +161,7 @@ export const createJob = TryCatch(
     `;
 
     res.json({
-      message: "✅ Job created successfully",
+      message: "Job created successfully",
       job: newJob,
     });
   },
