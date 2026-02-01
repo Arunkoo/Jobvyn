@@ -186,7 +186,7 @@ export const updateJob = TryCatch(
       role,
       job_type,
       work_location,
-      company_id,
+
       openings,
       is_active,
     } = req.body;
@@ -215,7 +215,7 @@ export const updateJob = TryCatch(
         role = ${role},
         job_type = ${job_type},
         work_location = ${work_location},
-        company_id = ${company_id},
+        
         openings = ${openings},
         is_active = ${is_active}
       WHERE job_id = ${req.params.jobId}
@@ -223,7 +223,7 @@ export const updateJob = TryCatch(
     `;
 
     res.json({
-      message: "✅ Job Updated Successfully!",
+      message: " Job Updated Successfully!",
       updatedJob,
     });
   },

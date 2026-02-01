@@ -36,6 +36,7 @@ const Companies = () => {
   const [logo, setLogo] = useState<File | null>(null);
   const [btnLoading, setBtnLoading] = useState(false);
   const [companies, setCompanies] = useState<Company[]>([]);
+  const [companyLoading, setCompanyLoading] = useState(true);
 
   const clearData = () => {
     setName("");
@@ -58,6 +59,8 @@ const Companies = () => {
       setCompanies(data.companies);
     } catch (error) {
       console.log(error);
+    } finally {
+      setCompanyLoading(false);
     }
   }
 
@@ -151,106 +154,115 @@ const Companies = () => {
       </div>
 
       {/* Companies List - Compact Layout */}
-      {companies.length > 0 ? (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          {companies.map((c) => (
-            <Card
-              key={c.company_id}
-              className="border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow transition-shadow"
-            >
-              <div className="p-4">
-                <div className="flex items-start justify-between gap-3">
-                  {/* Logo and Basic Info */}
-                  <div className="flex items-start gap-3 flex-1 min-w-0">
-                    <div className="h-12 w-12 relative rounded-lg border border-slate-200 dark:border-slate-800 overflow-hidden bg-white dark:bg-slate-800 shrink-0">
-                      <Image
-                        src={c.logo}
-                        alt={c.name}
-                        fill
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
+      {companyLoading ? (
+        <Loading />
+      ) : (
+        <>
+          {companies.length > 0 ? (
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+              {companies.map((c) => (
+                <Card
+                  key={c.company_id}
+                  className="border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow transition-shadow"
+                >
+                  <div className="p-4">
+                    <div className="flex items-start justify-between gap-3">
+                      {/* Logo and Basic Info */}
+                      <div className="flex items-start gap-3 flex-1 min-w-0">
+                        <div className="h-12 w-12 relative rounded-lg border border-slate-200 dark:border-slate-800 overflow-hidden bg-white dark:bg-slate-800 shrink-0">
+                          <Image
+                            src={c.logo}
+                            alt={c.name}
+                            fill
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
 
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center justify-between mb-1">
-                        <h3 className="font-semibold text-slate-900 dark:text-white truncate">
-                          {c.name}
-                        </h3>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center justify-between mb-1">
+                            <h3 className="font-semibold text-slate-900 dark:text-white truncate">
+                              {c.name}
+                            </h3>
+                          </div>
+
+                          <p className="text-xs text-slate-600 dark:text-slate-400 mb-2 line-clamp-2">
+                            {c.description}
+                          </p>
+
+                          <div className="flex items-center gap-2">
+                            <Globe
+                              size={12}
+                              className="text-slate-400 shrink-0"
+                            />
+                            <Link
+                              href={c.website}
+                              target="_blank"
+                              className="text-xs text-blue-600 dark:text-blue-400 hover:underline truncate"
+                              title={c.website}
+                            >
+                              {c.website.replace(/^https?:\/\//, "")}
+                            </Link>
+                          </div>
+                        </div>
                       </div>
 
-                      <p className="text-xs text-slate-600 dark:text-slate-400 mb-2 line-clamp-2">
-                        {c.description}
-                      </p>
-
-                      <div className="flex items-center gap-2">
-                        <Globe size={12} className="text-slate-400 shrink-0" />
-                        <Link
-                          href={c.website}
-                          target="_blank"
-                          className="text-xs text-blue-600 dark:text-blue-400 hover:underline truncate"
-                          title={c.website}
-                        >
-                          {c.website.replace(/^https?:\/\//, "")}
+                      {/* Actions - Compact */}
+                      <div className="flex flex-col gap-1 shrink-0">
+                        <Link href={`/company/${c.company_id}`}>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8 cursor-pointer"
+                            title="View Details"
+                          >
+                            <Eye size={14} />
+                          </Button>
                         </Link>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-8 w-8 text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20 cursor-pointer"
+                          onClick={() => deleteCompaniesHandler(c.company_id)}
+                          title="Delete Company"
+                        >
+                          <Trash2 size={14} />
+                        </Button>
                       </div>
                     </div>
                   </div>
-
-                  {/* Actions - Compact */}
-                  <div className="flex flex-col gap-1 shrink-0">
-                    <Link href={`/company/${c.company_id}`}>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-8 w-8 cursor-pointer"
-                        title="View Details"
-                      >
-                        <Eye size={14} />
-                      </Button>
-                    </Link>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-8 w-8 text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20 cursor-pointer"
-                      onClick={() => deleteCompaniesHandler(c.company_id)}
-                      title="Delete Company"
-                    >
-                      <Trash2 size={14} />
-                    </Button>
-                  </div>
+                </Card>
+              ))}
+            </div>
+          ) : (
+            /* Empty State - Compact */
+            <Card className="border border-slate-200 dark:border-slate-800 shadow-sm">
+              <div className="p-8 text-center">
+                <div className="inline-flex items-center justify-center w-12 h-12 rounded-full border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-800 mb-3">
+                  <Building2
+                    className="text-slate-400 dark:text-slate-600"
+                    size={24}
+                  />
                 </div>
+                <h3 className="font-semibold text-slate-900 dark:text-white mb-2">
+                  No Companies Yet
+                </h3>
+                <p className="text-sm text-slate-600 dark:text-slate-400 mb-4 max-w-sm mx-auto">
+                  Add your first company to start posting jobs
+                </p>
+                {companies.length < 4 && (
+                  <Button
+                    onClick={openDialog}
+                    className="gap-2 cursor-pointer bg-blue-600 hover:bg-blue-700 h-9"
+                    size="sm"
+                  >
+                    <Plus size={16} />
+                    Add Company
+                  </Button>
+                )}
               </div>
             </Card>
-          ))}
-        </div>
-      ) : (
-        /* Empty State - Compact */
-        <Card className="border border-slate-200 dark:border-slate-800 shadow-sm">
-          <div className="p-8 text-center">
-            <div className="inline-flex items-center justify-center w-12 h-12 rounded-full border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-800 mb-3">
-              <Building2
-                className="text-slate-400 dark:text-slate-600"
-                size={24}
-              />
-            </div>
-            <h3 className="font-semibold text-slate-900 dark:text-white mb-2">
-              No Companies Yet
-            </h3>
-            <p className="text-sm text-slate-600 dark:text-slate-400 mb-4 max-w-sm mx-auto">
-              Add your first company to start posting jobs
-            </p>
-            {companies.length < 4 && (
-              <Button
-                onClick={openDialog}
-                className="gap-2 cursor-pointer bg-blue-600 hover:bg-blue-700 h-9"
-                size="sm"
-              >
-                <Plus size={16} />
-                Add Company
-              </Button>
-            )}
-          </div>
-        </Card>
+          )}
+        </>
       )}
 
       {/* Add Company Dialog - Compact */}
