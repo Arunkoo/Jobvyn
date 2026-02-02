@@ -350,7 +350,7 @@ export const applyForJob = TryCatch(
     }
 
     res.json({
-      message: "✅ Applied for job successfully",
+      message: "Applied for job successfully",
       application: newApplication,
     });
   },

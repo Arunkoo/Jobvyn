@@ -3,7 +3,7 @@
 import { useAppData, user_service_url } from "@/context/AppContext";
 import { User } from "@/type";
 import axios from "axios";
-import { useParams } from "next/navigation";
+import { redirect, useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import Loading from "@/components/loading";
@@ -13,6 +13,7 @@ const UserAccountPage = () => {
   const { id } = useParams();
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoding] = useState(true);
+  const { isAuth } = useAppData();
 
   async function fetchUserData() {
     const token = Cookies.get("token");
@@ -36,7 +37,9 @@ const UserAccountPage = () => {
     fetchUserData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
+
   if (loading) return <Loading />;
+
   return (
     <div className="min-h-screen bg-linear-to-b from-slate-50 to-white dark:from-slate-950 dark:to-slate-900 py-6 md:py-8 px-4">
       <div className="max-w-4xl mx-auto">

@@ -27,7 +27,8 @@ const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [btnLoading, setBtnLoading] = useState(false);
 
-  const { isAuth, setUser, loading, setIsAuth } = useAppData();
+  const { isAuth, setUser, loading, setIsAuth, fetchApplication } =
+    useAppData();
   if (loading) {
     return <Loading />;
   }
@@ -51,6 +52,7 @@ const LoginPage = () => {
       });
       setUser(data.userObject);
       setIsAuth(true);
+      fetchApplication();
     } catch (error: any) {
       toast.error(error.response.data.message);
       setIsAuth(false);

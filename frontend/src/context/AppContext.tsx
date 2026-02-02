@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { AppContextType, AppProviderProps, User } from "@/type";
+import { AppContextType, Application, AppProviderProps, User } from "@/type";
 import React, { createContext, useContext, useEffect, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import Cookies from "js-cookie";
@@ -18,6 +18,7 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [btnLoading, setBtnLoading] = useState(false);
   const token = Cookies.get("token");
+  const [application, setApplication] = useState<Application[] | null>(null);
 
   async function fetchUserData() {
     if (!token) {
@@ -151,7 +152,38 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
       toast.error(error.response.data.message);
     }
   }
+  //apply for jobs...
+  async function applyJob(job_id: number) {
+    setBtnLoading(true);
+    try {
+      const { data } = await axios.post(
+        `${user_service_url}/api/user/apply/job`,
+        { job_id },
+        { headers: { Authorization: `Bearer ${token}` } },
+      );
 
+      toast.success(data.message);
+      fetchApplication();
+    } catch (error: any) {
+      toast.error(error.response.data.message);
+    } finally {
+      setBtnLoading(false);
+    }
+  }
+
+  //fetch all Application....
+  async function fetchApplication() {
+    try {
+      const { data } = await axios.get(
+        `${user_service_url}/api/user/application/all`,
+        { headers: { Authorization: `Bearer ${token}` } },
+      );
+
+      setApplication(data);
+    } catch (error) {
+      console.log(error);
+    }
+  }
   //logout function..
   async function logoutUser() {
     if (!token) return;
@@ -163,6 +195,7 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
 
   useEffect(() => {
     fetchUserData();
+    fetchApplication();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return (
@@ -181,6 +214,9 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
         updateUser,
         addSkill,
         removeSkill,
+        applyJob,
+        application,
+        fetchApplication,
       }}
     >
       {children}

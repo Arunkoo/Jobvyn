@@ -80,10 +80,12 @@ export interface AppContextType {
     setSkill: React.Dispatch<React.SetStateAction<string>>,
   ) => Promise<void>;
   removeSkill: (skill: string) => Promise<void>;
-
+  applyJob: (job_id: number) => Promise<void>;
   updateProfilePic: (fromData: any) => Promise<void>;
   updateResume: (FormData: any) => Promise<void>;
   updateUser: (name: string, phoneNumber: string, bio: string) => Promise<void>;
+  application: Application[] | null;
+  fetchApplication: () => Promise<void>;
 }
 
 export interface AppProviderProps {
@@ -106,6 +108,8 @@ export interface jobs {
   role: string;
   work_location: "On-site" | "Remote" | "Hybrid";
   company_id: number;
+  company_name: string;
+  company_logo: string;
   posted_by_recruiter_id: number;
   created_at: string;
   is_active: boolean;

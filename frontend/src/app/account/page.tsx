@@ -5,11 +5,12 @@ import React from "react";
 import Info from "./component/info";
 import Skills from "./component/skills";
 import Companies from "./component/companies";
+import { redirect } from "next/navigation";
 
 const Accountpage = () => {
   const { isAuth, user, loading } = useAppData();
   if (loading) return <Loading />;
-
+  if (!isAuth) redirect("/");
   return (
     <div className="min-h-screen bg-linear-to-b from-slate-50 to-white dark:from-slate-950 dark:to-slate-900 py-6 md:py-8 px-4">
       <div className="max-w-4xl mx-auto">
