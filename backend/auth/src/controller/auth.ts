@@ -243,6 +243,6 @@ export const resetPassword = TryCatch(async (req, res, next) => {
   redisClient.del(`forgot:${email}`);
 
   res.json({
-    message: "✅ Password Changed Succesfully",
+    message: " Password Changed Succesfully",
   });
 });
