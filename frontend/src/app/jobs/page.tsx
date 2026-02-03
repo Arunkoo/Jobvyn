@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react-hooks/set-state-in-effect */
 "use client";
 import { jobs } from "@/type";
@@ -6,13 +7,24 @@ import Cookies from "js-cookie";
 import axios from "axios";
 import { job_service_url } from "@/context/AppContext";
 import { Button } from "@/components/ui/button";
-import { Briefcase, FilterIcon } from "lucide-react";
+import { Briefcase, FilterIcon, MapPin, Search, X } from "lucide-react";
 import Loading from "@/components/loading";
 import JobsCard from "@/components/jobsCard";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Select } from "@/components/ui/select";
 const location: string[] = [
   "Delhi",
   "Mumbai",
-  "Banglore",
+  "Bengluru",
   "Hyderabad",
   "Pune",
   "Kolkata",
@@ -26,6 +38,17 @@ const JobsPage = () => {
   const [Location, setLocation] = useState("");
   const token = Cookies.get("token");
   const ref = useRef<HTMLButtonElement>(null);
+  const clickEvent = () => {
+    ref.current?.click();
+  };
+  const clearFilter = () => {
+    setTitle("");
+    setLocation("");
+    fetchJobs();
+    ref.current?.click();
+  };
+
+  const hasFilterActive = title || Location;
   async function fetchJobs() {
     setLoading(true);
     try {
@@ -43,7 +66,7 @@ const JobsPage = () => {
   }
   useEffect(() => {
     fetchJobs();
-  }, []);
+  }, [title, Location]);
   return (
     <div className="min-h-screen bg-secondary/30">
       <div className="max-w-7xl mx-auto px-4 py-8">
@@ -56,11 +79,47 @@ const JobsPage = () => {
               </h1>
               <p className="text-base opacity-70 ">{jobs.length} jobs</p>
             </div>
-            <Button className="gap-2 h-11">
+            <Button className="gap-2 h-11" onClick={clickEvent}>
               <FilterIcon size={18} />
               Filters
+              {hasFilterActive && (
+                <span className="ml-1 px-2 py-0.5 rounded-full bg-red-500 text-white text-xs">
+                  Active
+                </span>
+              )}
             </Button>
           </div>
+          {hasFilterActive && (
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="text-sm opacity-70">Active Filters:</span>
+              {title && (
+                <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-100 dark:bg-lue-900/30 text-blue-600 text-sm">
+                  <Search size={14} />
+                  {title}
+                  <button
+                    title="abort"
+                    onClick={() => setTitle("")}
+                    className="bg-blue-200 dark:bg-blue-800 rounded-full p-0.5"
+                  >
+                    <X size={14} />
+                  </button>
+                </div>
+              )}
+              {Location && (
+                <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-100 dark:bg-lue-900/30 text-blue-600 text-sm">
+                  <MapPin size={14} />
+                  {Location}
+                  <button
+                    title="abort"
+                    onClick={() => setLocation("")}
+                    className="bg-blue-200 dark:bg-blue-800 rounded-full p-0.5"
+                  >
+                    <X size={14} />
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
           {loading ? (
             <Loading />
           ) : (
@@ -82,6 +141,63 @@ const JobsPage = () => {
             </>
           )}
         </div>
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button ref={ref} className="hidden"></Button>
+          </DialogTrigger>
+          <DialogContent className="sm:max-w-125">
+            <DialogHeader>
+              <DialogTitle className="text-2xl flex items-center gap-2">
+                <FilterIcon className="text-blue-600" />
+                Filter Jobs
+              </DialogTitle>
+            </DialogHeader>
+            <div className="space-y-3 py-3">
+              <div className="space-y-1.5">
+                <Label htmlFor="title" className="text-sm">
+                  <Search size={16} />
+                  Search by job title
+                </Label>
+                <Input
+                  id="title"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  className="h-9 text-sm"
+                />
+              </div>
+              <div className="space-y-1.5">
+                <Label htmlFor="location" className="text-sm">
+                  <MapPin size={16} />
+                  Search by job location
+                </Label>
+                <select
+                  title="location"
+                  id="location"
+                  value={Location}
+                  onChange={(e) => setLocation(e.target.value)}
+                  className="w-full h-11 px-3 border-2 border-gray-300 rounded-md bg-transparent focus:outline-none focus:ring-2"
+                >
+                  <option value="">All locations</option>
+                  {location.map((e) => (
+                    <option value={e} key={e}>
+                      {e}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            <DialogFooter className="gap-2">
+              <Button
+                variant={"outline"}
+                onClick={clearFilter}
+                className="flex-1"
+              >
+                Clear All
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );
