@@ -400,7 +400,7 @@ export const updateApplicationStatus = TryCatch(
     });
 
     res.json({
-      message: "✅ Application Status updated successfully",
+      message: " Application Status updated successfully",
       job,
       updatedApplication,
     });
