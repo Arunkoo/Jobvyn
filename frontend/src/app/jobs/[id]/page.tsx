@@ -19,6 +19,7 @@ import { useParams, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import toast from "react-hot-toast";
+import Link from "next/link";
 const Jobpage = () => {
   const { id } = useParams();
   const { user, isAuth, applyJob, application, btnLoading } = useAppData();
@@ -93,6 +94,7 @@ const Jobpage = () => {
         { status: value },
         { headers: { Authorization: `Bearer ${token}` } },
       );
+      fetchSingleJob();
       toast.success(data.message);
     } catch (error: any) {
       toast.error(error.response.data.message);
@@ -273,12 +275,59 @@ const Jobpage = () => {
                         {e.status}
                       </span>
                     </div>
+                    <div className="flex gap-3 mb-3">
+                      <Link
+                        target="_blank"
+                        href={e.resume}
+                        className="text-blue-500 hover:underline text-sm"
+                      >
+                        View Resume
+                      </Link>
+                    </div>
+                    <div className="flex gap-3 mb-3">
+                      <Link
+                        target="_blank"
+                        href={`/account/${e.applicant_id}`}
+                        className="text-blue-500 hover:underline text-sm"
+                      >
+                        View Profile
+                      </Link>
+                    </div>
+                    {/* update status of application.... */}
+                    <div className="flex gap-2 pt-3 border-t">
+                      <select
+                        title="changeStatus"
+                        value={value}
+                        onChange={(e) => setValue(e.target.value)}
+                        className="flex-1 p-2 border-2 border-gray-300 rounded-md bg-background"
+                      >
+                        <option value="All">Update status</option>
+                        <option value="Submitted">Submitted</option>
+                        <option value="Rejected">Rejected</option>
+                        <option value="Hired">Hired</option>
+                      </select>
+                      <Button
+                        disabled={btnLoading}
+                        onClick={() =>
+                          updateApplicationHandler(e.application_id)
+                        }
+                      >
+                        Update status
+                      </Button>
+                    </div>
                   </div>
                 ))}
               </div>
+              {filteredApplication?.length === 0 && (
+                <p className="text-center py-8 opacity-70">
+                  No application with status {filterStatus}
+                </p>
+              )}
             </>
           ) : (
-            <></>
+            <>
+              <p className="text-center py-8 opacity-70">No application yet</p>
+            </>
           )}
         </div>
       )}
