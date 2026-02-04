@@ -15,18 +15,24 @@ import { Label } from "@/components/ui/label";
 import { useAppData } from "@/context/AppContext";
 import { AccountProps } from "@/type";
 import {
+  AlertTriangle,
   Briefcase,
   CameraIcon,
+  CheckCircle,
+  CheckCircleIcon,
+  Crown,
   Edit,
   FileText,
   Mail,
   Notebook,
   NotepadText,
   Phone,
+  RefreshCw,
 } from "lucide-react";
 
 import Link from "next/link";
-import React, { ChangeEvent, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
+import React, { ChangeEvent, useMemo, useRef, useState } from "react";
 import toast from "react-hot-toast";
 
 const Info: React.FC<AccountProps> = ({ isYourAccount, user }) => {
@@ -77,6 +83,9 @@ const Info: React.FC<AccountProps> = ({ isYourAccount, user }) => {
       updateResume(formData);
     }
   };
+
+  const router = useRouter();
+
   return (
     <Card className="border border-slate-200 dark:border-slate-800 shadow-sm">
       {/* Profile header */}
@@ -249,6 +258,97 @@ const Info: React.FC<AccountProps> = ({ isYourAccount, user }) => {
               onChange={changeResumeHandler}
             />
           </div>
+        )}
+        {/* subscription sections.. */}
+        {isYourAccount && (
+          <>
+            {user?.role === "jobseeker" && (
+              <div className="mt-8">
+                <h2 className="text-lg font-semibold mt-4 flex items-center gap-2">
+                  <Crown size={20} className="text-blue-600" />
+                  Subscription Status
+                </h2>
+                <div className="p-6 rounded-lg bg-linear-to-br from-blue-50 to-purple-50 dark:from-blue-900/20 to-pruple-950/20">
+                  {!user.subscription ? (
+                    <>
+                      <div className="flex items-center justify-between flex-wrap gap-4">
+                        <div>
+                          <p className="font-semibold text-lg mb-1">
+                            No Active Subscription
+                          </p>
+                          <p className="text-sm opcaity-70">
+                            Subscribe to unlock premium feature and benefits
+                          </p>
+                        </div>
+                        <Button
+                          className="gap-2 cursor-pointer"
+                          onClick={() => router.push("/subscribe")}
+                        >
+                          <Crown size={18} />
+                          Subscribe Now !
+                        </Button>
+                      </div>
+                    </>
+                  ) : // eslint-disable-next-line react-hooks/purity
+                  new Date(user.subscription).getTime() > Date.now() ? (
+                    <div className="flex items-center justify-center flex-wrap gap-4">
+                      <div>
+                        <div className="flex items-center gap-2 mb-2">
+                          <CheckCircle size={20} className="text-green-600" />
+                          <p className="font-semibold text-lg text-green-600">
+                            Active Subscription
+                          </p>
+                        </div>
+                        <p className="text-sm opacity-70">
+                          Valid till:{" "}
+                          {new Date(user.subscription).toLocaleDateString(
+                            "en-Us",
+                            { year: "numeric", month: "long", day: "numeric" },
+                          )}
+                        </p>
+                      </div>
+                      <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-green-700 text-white font-medium">
+                        <CheckCircleIcon size={18} />
+                        Subscribed
+                      </div>
+                    </div>
+                  ) : (
+                    <>
+                      <div className="flex items-center justify-between flex-wrap gap-4">
+                        <div>
+                          <div className="flex items-center gap-2 mb-2">
+                            <AlertTriangle size={20} className="text-red-600" />
+                            <p className="font-semibold text-lg text-red-600">
+                              Subscription Expired !
+                            </p>
+                          </div>
+                          <p className="text-sm opacity-70">
+                            Expired On {""}
+                            {new Date(user.subscription).toLocaleDateString(
+                              "en-Us",
+                              {
+                                year: "numeric",
+                                month: "long",
+                                day: "numeric",
+                              },
+                            )}
+                          </p>
+                        </div>
+                        <Button
+                          variant={"destructive"}
+                          className="gap-2"
+                          onClick={() => router.push("/subscribe")}
+                        >
+                          <RefreshCw size={18} />
+                          Renew Subscription
+                        </Button>
+                      </div>
+                    </>
+                  )}
+                </div>
+              </div>
+            )}
+          </>
         )}
       </div>
 

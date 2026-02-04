@@ -82,9 +82,8 @@ const Skills: React.FC<AccountProps> = ({ isYourAccount, user }) => {
             </div>
             <Button
               onClick={addSkillHandler}
-              className="h-10 px-4 text-sm bg-blue-600 hover:bg-blue-700"
+              className="h-10 px-4 text-sm cursor-pointer"
               disabled={!skill.trim() || btnLoading}
-              size="sm"
             >
               <Plus size={16} className="mr-2" />
               Add
