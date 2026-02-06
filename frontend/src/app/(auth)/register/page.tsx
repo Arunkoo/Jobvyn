@@ -58,7 +58,7 @@ const RegisterPage = () => {
     if (role === "jobseeker") {
       formData.append("bio", bio);
       if (resume) {
-        formData.append("resume", resume);
+        formData.append("file", resume);
       }
     }
     try {

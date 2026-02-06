@@ -30,7 +30,7 @@ export const CheckOut = TryCatch(
     }
 
     const options = {
-      amount: Number(119 * 100),
+      amount: Number(299 * 100),
       currency: "INR",
       notes: {
         user_id: user_id.toString(),

@@ -62,7 +62,6 @@ export const registerUser = TryCatch(async (req, res, next) => {
       { buffer: fileBuffer.content },
     );
 
-    //log for bug
     // console.log("UPLOAD URL:", process.env.UPLOAD_SERVICE_URL);
     // console.log("BUFFER TYPE:", typeof fileBuffer.content);
     // console.log("BUFFER SIZE:", fileBuffer.content.length);
