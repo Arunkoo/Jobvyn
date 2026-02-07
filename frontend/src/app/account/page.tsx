@@ -6,9 +6,10 @@ import Info from "./component/info";
 import Skills from "./component/skills";
 import Companies from "./component/companies";
 import { redirect } from "next/navigation";
+import AppliedJobs from "./component/appliedJobs";
 
 const Accountpage = () => {
-  const { isAuth, user, loading } = useAppData();
+  const { isAuth, user, loading, application } = useAppData();
   if (loading) return <Loading />;
   if (!isAuth) redirect("/");
   return (
@@ -28,6 +29,9 @@ const Accountpage = () => {
             <Info user={user} isYourAccount={true} />
             {user.role === "jobseeker" && (
               <Skills user={user} isYourAccount={true} />
+            )}
+            {user.role === "jobseeker" && (
+              <AppliedJobs applications={application} />
             )}
             {user.role === "recruiter" && <Companies />}
           </div>

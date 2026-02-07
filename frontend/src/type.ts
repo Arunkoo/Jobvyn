@@ -136,7 +136,7 @@ export interface Application {
   resume: string;
   applied_at: string;
   subscribed: boolean;
-  jobs_title: string;
+  job_title: string;
   job_salary: number;
   job_location: string;
 }
