@@ -47,7 +47,7 @@ const LoginPage = () => {
 
       Cookies.set("token", data.token, {
         expires: 15,
-        secure: true,
+        secure: false, //turned secure to false due to aws deplyment
         path: "/",
       });
       setUser(data.userObject);
