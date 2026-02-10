@@ -6,11 +6,11 @@ import React, { createContext, useContext, useEffect, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import Cookies from "js-cookie";
 import axios from "axios";
-export const utils_service_url = "http://13.201.96.89:5001";
-export const auth_service_url = "http://13.201.96.89:5000";
-export const user_service_url = "http://13.201.96.89:5002";
-export const job_service_url = "http://13.201.96.89:5003";
-export const payment_service_url = "http://13.201.96.89:5004";
+export const utils_service_url = "http://13.127.16.121:5001";
+export const auth_service_url = "http://13.127.16.121:5000";
+export const user_service_url = "http://13.127.16.121:5002";
+export const job_service_url = "http://13.127.16.121:5003";
+export const payment_service_url = "http://13.127.16.121:5004";
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
