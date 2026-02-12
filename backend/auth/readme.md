@@ -7,7 +7,7 @@ It integrates with external services for resume uploads and email notifications,
 
 ---
 
-## 🚀 What This Service Does
+##  What This Service Does
 
 - Registers **Jobseekers** and **Recruiters**
 - Secure login using **JWT Authentication**
@@ -18,9 +18,9 @@ It integrates with external services for resume uploads and email notifications,
 
 ---
 
-## 🔐 Core Application Flow
+##  Core Application Flow
 
-### 1️⃣ Registration
+### 1️ Registration
 
 - Validates required fields
 - Hashes password using bcrypt
@@ -30,7 +30,7 @@ It integrates with external services for resume uploads and email notifications,
 
 ---
 
-### 2️⃣ Login
+### 2️ Login
 
 - Validates email & password
 - Compares hashed password
@@ -39,7 +39,7 @@ It integrates with external services for resume uploads and email notifications,
 
 ---
 
-### 3️⃣ Forgot Password
+### 3️ Forgot Password
 
 - Generates short-lived reset token (10 minutes)
 - Stores token in Redis (prevents reuse)
@@ -48,7 +48,7 @@ It integrates with external services for resume uploads and email notifications,
 
 ---
 
-### 4️⃣ Reset Password
+### 4️ Reset Password
 
 - Verifies JWT reset token
 - Validates Redis-stored token
@@ -57,7 +57,7 @@ It integrates with external services for resume uploads and email notifications,
 
 ---
 
-## 🧩 Service Integrations
+##  Service Integrations
 
 - **Upload Service** → Handles resume storage
 - **Mail Service (Event-Driven)** → Sends password reset emails
@@ -66,7 +66,7 @@ It integrates with external services for resume uploads and email notifications,
 
 ---
 
-## 🏗 Architecture Principles
+##  Architecture Principles
 
 - Stateless JWT-based authentication
 - Secure password hashing
@@ -77,11 +77,11 @@ It integrates with external services for resume uploads and email notifications,
 
 ---
 
-## 🖼 Database Design
+##  Database Design
 
----<img src="./docs/UserSchema1.png" alt="Auth Service ER Diagram" width="700"/>
+<img src="./docs/UserSchema1.png" alt="Auth Service ER Diagram" width="700"/>
 
-## 🛠 Tech Stack Used
+##  Tech Stack Used
 
 **Backend**
 
@@ -112,7 +112,7 @@ It integrates with external services for resume uploads and email notifications,
 
 ---
 
-## ⚙ Environment Variables
+##  Environment Variables
 
 ```
 PORT=
@@ -125,7 +125,7 @@ FRONTEND_URL=
 
 ---
 
-## ▶ Running Locally
+##  Running Locally
 
 ```bash
 npm install
