@@ -34,7 +34,7 @@ const SubscriptionPage = () => {
     );
 
     const options = {
-      key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
+      key: "rzp_test_SCTufyVVxnXLrs",
       amount: "order.id",
       name: "JobVyn",
       description:
