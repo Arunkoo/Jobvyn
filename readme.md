@@ -22,7 +22,7 @@ Core focus areas:
 - Structured AI integration
 - Cloud-ready deployment
 
-  <img src="./docs/jobvyn2.png.png" alt="job Service ER Diagram" width="700"/>
+  <img src="./docs/jobvyn2.png" alt="job Service ER Diagram" width="700"/>
 
 ---
 
