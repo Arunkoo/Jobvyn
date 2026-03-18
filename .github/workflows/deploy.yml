@@ -73,6 +73,6 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY}}
           script: |
             cd /home/ubuntu/deploy
-            docker-compose -f docker-compose.lite.yml pull
-            docker-compose -f docker-compose.lite.yml up -d
+            docker compose -f docker-compose.lite.yml pull
+            docker compose -f docker-compose.lite.yml up -d --force-recreate
             docker image prune -f
