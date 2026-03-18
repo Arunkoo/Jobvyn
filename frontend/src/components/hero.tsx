@@ -39,7 +39,7 @@ const HeroSection = () => {
                   />
                 </div>
                 <span className="text-xs sm:text-sm font-semibold text-blue-700 dark:text-blue-300">
-                  #FindYourFit • Work that grows with you
+                  #UnlockYourPath • Opportunities that fit you
                 </span>
               </div>
             </div>
