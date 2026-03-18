@@ -30,35 +30,35 @@ jobs:
 
         #   Build and puh services...auth, utils, users, job, payment...continue-on-error:
       - name: Build & push user
-        uses: docker/build-push-actions@v5
+        uses: docker/build-push-action@v5
         with:
           context: ./backend/user
           push: true
           tags: ${{secrets.DOCKERHUB_USERNAME}}/user:latest
 
       - name: Build & push auth
-        uses: docker/build-push-actions@v5
+        uses: docker/build-push-action@v5
         with:
           context: ./backend/auth
           push: true
           tags: ${{secrets.DOCKERHUB_USERNAME}}/auth:latest
 
       - name: Build & push utils
-        uses: docker/build-push-actions@v5
+        uses: docker/build-push-action@v5
         with:
           context: ./backend/utils
           push: true
           tags: ${{secrets.DOCKERHUB_USERNAME}}/utils:latest
 
       - name: Build & push job
-        uses: docker/build-push-actions@v5
+        uses: docker/build-push-action@v5
         with:
           context: ./backend/job
           push: true
           tags: ${{secrets.DOCKERHUB_USERNAME}}/job:latest
 
       - name: Build & push payment
-        uses: docker/build-push-actions@v5
+        uses: docker/build-push-action@v5
         with:
           context: ./backend/payment
           push: true
