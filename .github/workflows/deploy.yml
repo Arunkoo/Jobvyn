@@ -1,0 +1,78 @@
+name: Deploy Jobvyn
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # ------Getting code onto my github vm.
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      #---Log into docker hub
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME}}
+          password: ${{ secrets.DOCKERHUB_TOKEN}}
+
+        # Build and push the frontend Docker image to Docker Hub
+      - name: Build & push frontend
+        uses: docker/build-push-action@v5
+        with:
+          context: ./frontend
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME}}/frontend:latest
+
+        #   Build and puh services...auth, utils, users, job, payment...continue-on-error:
+      - name: Build & push user
+        uses: docker/build-push-actions@v5
+        with:
+          context: ./backend/user
+          push: true
+          tags: ${{secrets.DOCKERHUB_USERNAME}}/user:latest
+
+      - name: Build & push auth
+        uses: docker/build-push-actions@v5
+        with:
+          context: ./backend/auth
+          push: true
+          tags: ${{secrets.DOCKERHUB_USERNAME}}/auth:latest
+
+      - name: Build & push utils
+        uses: docker/build-push-actions@v5
+        with:
+          context: ./backend/utils
+          push: true
+          tags: ${{secrets.DOCKERHUB_USERNAME}}/utils:latest
+
+      - name: Build & push job
+        uses: docker/build-push-actions@v5
+        with:
+          context: ./backend/job
+          push: true
+          tags: ${{secrets.DOCKERHUB_USERNAME}}/job:latest
+
+      - name: Build & push payment
+        uses: docker/build-push-actions@v5
+        with:
+          context: ./backend/payment
+          push: true
+          tags: ${{secrets.DOCKERHUB_USERNAME}}/payment:latest
+
+        # SSH INTO EC2 Instance and pull the latest images and restart the containers..
+      - name: Deploy to EC2
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.EC2_HOST}}
+          username: ${{ secrets.EC2_USER}}
+          key: ${{ secrets.EC2_SSH_KEY}}
+          script: |
+            cd /home/ubuntu/deploy
+            docker-compose -f docker-compose.lite.yml pull
+            docker-compose -f docker-compose.lite.yml up -d
+            docker image prune -f
