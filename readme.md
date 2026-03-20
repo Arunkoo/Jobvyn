@@ -2,7 +2,7 @@
 
 A distributed recruitment platform built with a service-oriented architecture, subscription-based access control, and AI-powered utilities.
 
-Designed to demonstrate real-world backend engineering: authentication, relational data modeling, event-driven workflows, payment verification, and containerized deployment.
+Designed to demonstrate real-world backend engineering: authentication, relational data modeling, event-driven workflows, payment verification, and containerized deployment with Github action ci/cd pipelines.
 
 ---
 
@@ -38,6 +38,7 @@ Core focus areas:
 - **Gemini API (AI Features)**
 - **Docker**
 - **AWS EC2**
+- **Github Action CI/CD**
 
 ### Frontend
 
@@ -73,6 +74,7 @@ Each service is isolated, containerized, and environment-configured for deployme
 - AI-powered Resume Analysis (structured output)
 - AI-based Career Guidance generation
 - Dockerized multi-service deployment on AWS
+- Automated integration and deployment using CI/CD pipeline
 
 ---
 
@@ -109,6 +111,7 @@ Backend services complete
 Kafka integration operational  
 AI features integrated  
 Dockerized and deployed on AWS EC2
+Continuos integratrion and deployment added using github actions
 
 ---
 
