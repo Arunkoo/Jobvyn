@@ -1,4 +1,6 @@
+import { env } from "./env.js";
 export interface ServiceConfig {
+  name: string;
   prefix: string;
   target: string;
   description: string;
@@ -10,28 +12,33 @@ export interface ServiceConfig {
  */
 export const SERVICES: Record<string, ServiceConfig> = {
   auth: {
+    name: "auth",
     prefix: "/api/auth",
-    target: process.env.AUTH_SERVICE_URL ?? "http://localhost:4001",
+    target: env.AUTH_SERVICE_URL,
     description: "Authentication service",
   },
   user: {
+    name: "user",
     prefix: "/api/user",
-    target: process.env.USER_SERVICE_URL ?? "http://localhost:4002",
+    target: env.USER_SERVICE_URL,
     description: "User Mangement service",
   },
   job: {
+    name: "job",
     prefix: "/api/job",
-    target: process.env.JOB_SERVICE_URL ?? "http://localhost:4003",
+    target: env.JOB_SERVICE_URL,
     description: "Job service",
   },
   utils: {
+    name: "utils",
     prefix: "/api/utils",
-    target: process.env.UTILS_SERVICE_URL ?? "http://localhost:4005",
+    target: env.UTILS_SERVICE_URL,
     description: "Utils service",
   },
   payment: {
+    name: "payment",
     prefix: "/api/payment",
-    target: process.env.PAYMENT_SERVICE_URL ?? "http://localhost:4004",
+    target: env.PAYMENT_SERVICE_URL,
     description: "payment service",
   },
 };
