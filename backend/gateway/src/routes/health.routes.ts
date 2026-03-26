@@ -12,4 +12,10 @@ router.get("/health", (req, res) => {
   });
 });
 
+//temprory route   just for 500 server test.
+
+router.get("/error-test", () => {
+  throw new Error("Test error from gateway");
+});
+
 export default router;
