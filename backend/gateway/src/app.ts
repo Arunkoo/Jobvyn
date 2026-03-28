@@ -3,7 +3,11 @@ import cors from "cors";
 import healthRoutes from "./routes/health.routes.js";
 import { requestIdMiddleware } from "./middlewares/requestId.middleware.js";
 import { loggerMiddleware } from "./middlewares/logger.middleware.js";
-
+import gatewayRoutes from "./routes/gateway.routes.js";
+import {
+  errorMiddleware,
+  notFoundMiddleware,
+} from "./middlewares/error.middleware.js";
 const app = express();
 app.set("trust proxy", 1);
 
@@ -15,6 +19,10 @@ app.use(requestIdMiddleware);
 app.use(loggerMiddleware);
 
 app.use("/", healthRoutes);
+app.use("/", gatewayRoutes);
+
+app.use(notFoundMiddleware);
+app.use(errorMiddleware);
 
 app.use((req, res) => {
   res.status(404).json({

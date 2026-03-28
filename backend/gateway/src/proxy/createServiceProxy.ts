@@ -3,16 +3,27 @@ import { Socket } from "net";
 import { createProxyMiddleware } from "http-proxy-middleware";
 
 export function createServiceProxy(serviceName: string, target: string) {
+  console.log(`[PROXY INIT] service=${serviceName} target=${target}`);
   return createProxyMiddleware({
     target,
     changeOrigin: true,
     xfwd: true,
     proxyTimeout: 10000,
     timeout: 10000,
+    pathRewrite: (path, req: Request) => {
+      const finalPath = req.originalUrl;
+      console.log(
+        `[REWRITE] service=${serviceName} original=${req.originalUrl} forwarded=${finalPath}`,
+      );
+      return finalPath;
+    },
 
     on: {
       // runs BEFORE forwarding request to service
       proxyReq: (proxyReq, req: Request) => {
+        console.log(
+          `[PROXY FORWARD] → http://${proxyReq.host}${proxyReq.path}`,
+        );
         if (req.requestId) {
           proxyReq.setHeader("x-request-id", req.requestId);
         }
@@ -33,7 +44,7 @@ export function createServiceProxy(serviceName: string, target: string) {
 
       error: (err, req: Request, res: Response | Socket) => {
         console.error(
-          `[PROXY ERROR] id=${req.requestId} service=${serviceName} message=${err.message.trim()}`,
+          `[PROXY ERROR] id=${req.requestId} service=${serviceName} message=${err.message}`,
         );
 
         // Socket case — just close the connection and move on
