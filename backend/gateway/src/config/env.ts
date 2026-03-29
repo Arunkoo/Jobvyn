@@ -20,4 +20,7 @@ export const env = {
   JOB_SERVICE_URL: getEnv("JOB_SERVICE_URL", "http://localhost:4003"),
   UTILS_SERVICE_URL: getEnv("UTILS_SERVICE_URL", "http://localhost:4004"),
   PAYMENT_SERVICE_URL: getEnv("PAYMENT_SERVICE_URL", "http://localhost:4005"),
+  REDIS_URL: getEnv("REDIS_URL", "redis://localhost:6379"),
+  RATE_LIMIT_WINDOW_SEC: Number(getEnv("RATE_LIMIT_WINDOW_SEC", "60")),
+  RATE_LIMIT_MAX_REQUEST: Number(getEnv("RATE_LIMIT_MAX_REQUESTS", "100")),
 };
