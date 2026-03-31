@@ -20,9 +20,9 @@ export async function rateLimitMiddleware(
     const ttl = await redisClient.ttl(key);
     const remaining = Math.max(env.RATE_LIMIT_MAX_REQUEST - currentRequest, 0);
 
-    res.setHeader("X-RateLimit-[LIMIT]", env.RATE_LIMIT_MAX_REQUEST);
-    res.setHeader("X-RateLimit-[Remaining]", remaining);
-    res.setHeader("X-RateLimit-[RESET]", ttl);
+    res.setHeader("X-RateLimit-limit", env.RATE_LIMIT_MAX_REQUEST);
+    res.setHeader("X-RateLimit-remaining", remaining);
+    res.setHeader("X-RateLimit-ttl", ttl);
 
     // edge check...
     if (currentRequest > env.RATE_LIMIT_MAX_REQUEST) {

@@ -8,6 +8,7 @@ import {
   errorMiddleware,
   notFoundMiddleware,
 } from "./middlewares/error.middleware.js";
+import { rateLimitMiddleware } from "./middlewares/rateLimit.middleware.js";
 const app = express();
 app.set("trust proxy", 1);
 
@@ -17,6 +18,7 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(requestIdMiddleware);
 app.use(loggerMiddleware);
+app.use(rateLimitMiddleware);
 
 app.use("/", healthRoutes);
 app.use("/", gatewayRoutes);
