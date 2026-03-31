@@ -1,14 +1,24 @@
 import { Router } from "express";
-import { timeStamp } from "node:console";
+import { redisClient } from "../config/redis.js";
 
 const router = Router();
 
-router.get("/health", (req, res) => {
+router.get("/health", async (req, res) => {
+  let redisStatus = "down";
+  try {
+    const pong = await redisClient.ping();
+    if (pong === "PONG") {
+      redisStatus = "up";
+    }
+  } catch {
+    redisStatus = "down";
+  }
   res.status(200).json({
     success: true,
     service: "gateway",
     message: "Gateway is running",
     timestamp: new Date().toISOString(),
+    redis: redisStatus,
   });
 });
 
