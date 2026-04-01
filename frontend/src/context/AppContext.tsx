@@ -6,11 +6,13 @@ import React, { createContext, useContext, useEffect, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import Cookies from "js-cookie";
 import axios from "axios";
-export const utils_service_url = "http://13.127.16.121:5001";
-export const auth_service_url = "http://13.127.16.121:5000";
-export const user_service_url = "http://13.127.16.121:5002";
-export const job_service_url = "http://13.127.16.121:5003";
-export const payment_service_url = "http://13.127.16.121:5004";
+export const api_gateway_url = "http://13.127.16.121:8001";
+
+export const utils_service_url = `${api_gateway_url}`;
+export const auth_service_url = `${api_gateway_url}`;
+export const user_service_url = `${api_gateway_url}`;
+export const job_service_url = `${api_gateway_url}`;
+export const payment_service_url = `${api_gateway_url}`;
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
