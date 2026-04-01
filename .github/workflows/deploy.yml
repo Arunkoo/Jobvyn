@@ -64,6 +64,13 @@ jobs:
           push: true
           tags: ${{secrets.DOCKERHUB_USERNAME}}/payment:latest
 
+      - name: Build & push gateway
+        uses: docker/build-push-action@v5
+        with:
+          context: ./backend/gateway
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/gateway:latest
+
         # SSH INTO EC2 Instance and pull the latest images and restart the containers..
       - name: Deploy to EC2
         uses: appleboy/ssh-action@v1
