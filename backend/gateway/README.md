@@ -14,11 +14,11 @@ The API Gateway is the single entry point for all client requests in the Jobvyn 
 
 | Prefix | Service | Default Target |
 |---|---|---|
-| `/api/auth` | Auth Service | `http://localhost:4001` |
-| `/api/user` | User Service | `http://localhost:4002` |
-| `/api/job` | Job Service | `http://localhost:4003` |
-| `/api/utils` | Utils Service | `http://localhost:4004` |
-| `/api/payment` | Payment Service | `http://localhost:4005` |
+| `/api/auth` | Auth Service | `http://localhost:5001` |
+| `/api/user` | User Service | `http://localhost:5002` |
+| `/api/job` | Job Service | `http://localhost:5003` |
+| `/api/utils` | Utils Service | `http://localhost:5004` |
+| `/api/payment` | Payment Service | `http://localhost:5005` |
 
 ## Tech Stack
 
@@ -59,11 +59,11 @@ Create a `.env` file in this directory:
 PORT=5000
 NODE_ENV=development
 
-AUTH_SERVICE_URL=http://localhost:4001
-USER_SERVICE_URL=http://localhost:4002
-JOB_SERVICE_URL=http://localhost:4003
-UTILS_SERVICE_URL=http://localhost:4004
-PAYMENT_SERVICE_URL=http://localhost:4005
+AUTH_SERVICE_URL=http://localhost:5001
+USER_SERVICE_URL=http://localhost:5002
+JOB_SERVICE_URL=http://localhost:5003
+UTILS_SERVICE_URL=http://localhost:5004
+PAYMENT_SERVICE_URL=http://localhost:5005
 
 REDIS_URL=redis://localhost:6379
 RATE_LIMIT_WINDOW_SEC=60
