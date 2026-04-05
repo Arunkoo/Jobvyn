@@ -18,14 +18,14 @@ export async function rateLimitMiddleware(
     }
 
     const ttl = await redisClient.ttl(key);
-    const remaining = Math.max(env.RATE_LIMIT_MAX_REQUEST - currentRequest, 0);
+    const remaining = Math.max(env.RATE_LIMIT_MAX_REQUESTS - currentRequest, 0);
 
-    res.setHeader("X-RateLimit-limit", env.RATE_LIMIT_MAX_REQUEST);
+    res.setHeader("X-RateLimit-limit", env.RATE_LIMIT_MAX_REQUESTS);
     res.setHeader("X-RateLimit-remaining", remaining);
     res.setHeader("X-RateLimit-ttl", ttl);
 
     // edge check...
-    if (currentRequest > env.RATE_LIMIT_MAX_REQUEST) {
+    if (currentRequest > env.RATE_LIMIT_MAX_REQUESTS) {
       return res.status(429).json({
         success: false,
         message: "Too many requests, please try again later.",
