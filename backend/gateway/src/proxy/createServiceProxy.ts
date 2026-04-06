@@ -2,11 +2,7 @@ import { Request, Response } from "express";
 import { Socket } from "net";
 import { createProxyMiddleware } from "http-proxy-middleware";
 
-export function createServiceProxy(
-  serviceName: string,
-  target: string,
-  prefix: string,
-) {
+export function createServiceProxy(serviceName: string, target: string) {
   console.log(`[PROXY INIT] service=${serviceName} target=${target}`);
   return createProxyMiddleware({
     target,
@@ -15,18 +11,18 @@ export function createServiceProxy(
     proxyTimeout: 10000,
     timeout: 10000,
     pathRewrite: (path, req: Request) => {
-      const strippedPath = req.originalUrl.replace(prefix, "") || "/";
+      // Services own their full prefix internally — forward as-is
+      const finalPath = req.originalUrl;
       console.log(
-        `[REWRITE] service=${serviceName} original=${req.originalUrl} forwarded=${strippedPath}`,
+        `[REWRITE] service=${serviceName} original=${req.originalUrl} forwarded=${finalPath}`,
       );
-      return strippedPath;
+      return finalPath;
     },
 
     on: {
       proxyReq: (proxyReq, req: Request) => {
-        console.log(
-          `[PROXY FORWARD] → ${target}${proxyReq.path}`, // ✅ also fixed log to show full URL
-        );
+        // Fixed: show full target URL in log, not just host
+        console.log(`[PROXY FORWARD] → ${target}${proxyReq.path}`);
         if (req.requestId) {
           proxyReq.setHeader("x-request-id", req.requestId);
         }
