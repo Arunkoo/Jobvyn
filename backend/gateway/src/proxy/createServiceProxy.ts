@@ -2,7 +2,11 @@ import { Request, Response } from "express";
 import { Socket } from "net";
 import { createProxyMiddleware } from "http-proxy-middleware";
 
-export function createServiceProxy(serviceName: string, target: string) {
+export function createServiceProxy(
+  serviceName: string,
+  target: string,
+  prefix: string,
+) {
   console.log(`[PROXY INIT] service=${serviceName} target=${target}`);
   return createProxyMiddleware({
     target,
@@ -11,32 +15,27 @@ export function createServiceProxy(serviceName: string, target: string) {
     proxyTimeout: 10000,
     timeout: 10000,
     pathRewrite: (path, req: Request) => {
-      const finalPath = req.originalUrl;
+      const strippedPath = req.originalUrl.replace(prefix, "") || "/";
       console.log(
-        `[REWRITE] service=${serviceName} original=${req.originalUrl} forwarded=${finalPath}`,
+        `[REWRITE] service=${serviceName} original=${req.originalUrl} forwarded=${strippedPath}`,
       );
-      return finalPath;
+      return strippedPath;
     },
 
     on: {
-      // runs BEFORE forwarding request to service
       proxyReq: (proxyReq, req: Request) => {
         console.log(
-          `[PROXY FORWARD] → http://${proxyReq.host}${proxyReq.path}`,
+          `[PROXY FORWARD] → ${target}${proxyReq.path}`, // ✅ also fixed log to show full URL
         );
         if (req.requestId) {
           proxyReq.setHeader("x-request-id", req.requestId);
         }
-        // tell the service this request came from gateway
         proxyReq.setHeader("x-gateway-service", "gateway");
       },
 
-      // runs AFTER service sends response back
       proxyRes: (proxyRes, req: Request) => {
-        // stamp the response so client knows it went through gateway
         proxyRes.headers["x-gateway-proxy"] = "true";
         proxyRes.headers["x-proxied-service"] = serviceName;
-
         console.log(
           `[PROXY] id=${req.requestId} service=${serviceName} status=${proxyRes.statusCode} path=${req.originalUrl}`,
         );
@@ -46,14 +45,10 @@ export function createServiceProxy(serviceName: string, target: string) {
         console.error(
           `[PROXY ERROR] id=${req.requestId} service=${serviceName} message=${err.message}`,
         );
-
-        // Socket case — just close the connection and move on
         if (res instanceof Socket) {
           res.destroy();
           return;
         }
-
-        // HTTP case — send a clean error response to the client
         if (!res.headersSent) {
           res.status(502).json({
             success: false,
