@@ -34,8 +34,8 @@ All traffic enters through a central **API Gateway** that handles routing, JWT v
 
 | Service | Responsibility | Key Tech |
 |---|---|---|
-| **Gateway** | Single entry point — routing, rate limiting, request tracing | Express, Redis, http-proxy-middleware |
-| **Auth** | Registration, login, JWT issuance, role management | JWT, bcrypt, Kafka producer |
+| **Gateway** | Single entry point — routing, rate limiting, request tracing, JWT verification | Express, Redis, http-proxy-middleware |
+| **Auth** | Registration, login, JWT issuance, password reset | JWT, bcrypt, Kafka producer, Redis |
 | **User** | Candidate profiles, subscriptions, job applications | PostgreSQL, Redis cache |
 | **Job** | Company creation, job posting lifecycle | PostgreSQL, Kafka producer |
 | **Payment** | Razorpay webhook verification, subscription activation | Razorpay, PostgreSQL |
@@ -43,11 +43,29 @@ All traffic enters through a central **API Gateway** that handles routing, JWT v
 
 ---
 
+## Gateway Routing
+
+The gateway uses a **service registry** pattern — each service is registered with a URL prefix and an internal target URL. Incoming requests are matched by prefix and proxied forward, with `originalUrl` preserved so services own their full path internally.
+
+| Prefix | Service |
+|---|---|
+| `/api/auth` | Auth Service |
+| `/api/user` | User Service |
+| `/api/job` | Job Service |
+| `/api/payment` | Payment Service |
+| `/api/utils` | Utils Service |
+
+**Public routes** (JWT skipped): `/api/auth/login`, `/api/auth/register`, `/api/job`, `/health`
+
+Every proxied request gets an `x-request-id` UUID header injected for end-to-end tracing. Responses carry `x-gateway-proxy` and `x-proxied-service` headers. Rate limit state is exposed via `X-RateLimit-limit`, `X-RateLimit-remaining`, and `X-RateLimit-ttl` response headers. Service unavailability returns a structured `502` with the request ID.
+
+---
+
 ## Engineering Highlights
 
 **Event-driven with Kafka** — Auth, Job, and User services produce events. The Utils service consumes them asynchronously, keeping services decoupled and non-blocking.
 
-**Redis for rate limiting and caching** — The gateway enforces per-IP rate limits. User service caches frequently read profile data to reduce DB load.
+**Redis for rate limiting and caching** — The gateway enforces per-IP rate limits using Redis INCR with sliding TTL windows. User service caches frequently read profile data to reduce DB load.
 
 **AI integration** — The Utils service calls Google Gemini API to analyse uploaded resumes and generate personalised career guidance for candidates.
 
