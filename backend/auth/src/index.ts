@@ -2,8 +2,12 @@ import dotenv from "dotenv";
 import app from "./app.js";
 import { sql } from "./utils/db.js";
 import { createClient } from "redis";
+import { connectKafka } from "./producer.js";
 dotenv.config();
 const Port = process.env.PORT || 5000;
+
+//spin kafka..
+connectKafka();
 
 //connecting to redis...
 export const redisClient = createClient({
