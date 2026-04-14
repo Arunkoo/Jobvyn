@@ -54,4 +54,19 @@ describe("loginUser", () => {
       message: "Please provide all nesscary details.",
     });
   });
+
+  // test2:
+  it("returns 400 if password is missing", async () => {
+    const req = mockRequest({ email: "someone@example.com" });
+    const res = mockResponse();
+
+    await loginUser(req as Request, res as Response, mockNext);
+
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith({
+      message: "Please provide all nesscary details.",
+    });
+
+    expect(sql).not.toHaveBeenCalled();
+  });
 });
