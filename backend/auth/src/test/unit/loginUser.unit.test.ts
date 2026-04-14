@@ -37,6 +37,10 @@ const mockResponse = () => {
 
 const mockNext: NextFunction = jest.fn();
 
+const data = {
+  email: "someone@example.com",
+  password: "pass123",
+};
 //___________________________________________________
 //                TESTS
 //___________________________________________________
@@ -44,7 +48,7 @@ const mockNext: NextFunction = jest.fn();
 describe("loginUser", () => {
   // test1:
   it("returns 400 if email is missing", async () => {
-    const req = mockRequest({ password: "pass123" });
+    const req = mockRequest({ password: data.password });
     const res = mockResponse();
 
     await loginUser(req as Request, res as Response, mockNext);
@@ -57,7 +61,7 @@ describe("loginUser", () => {
 
   // test2:
   it("returns 400 if password is missing", async () => {
-    const req = mockRequest({ email: "someone@example.com" });
+    const req = mockRequest({ email: data.email });
     const res = mockResponse();
 
     await loginUser(req as Request, res as Response, mockNext);
@@ -68,5 +72,22 @@ describe("loginUser", () => {
     });
 
     expect(sql).not.toHaveBeenCalled();
+  });
+
+  // test 3..
+  it("returns 400 if user is not found in DB", async () => {
+    const req = mockRequest({ email: data.email, password: data.password });
+    const res = mockResponse();
+
+    //mock one time db so next time it hit with fresh data..
+    //TODO: COULD BE BETTER TYPE..
+    (sql as unknown as jest.Mock).mockResolvedValueOnce([]);
+
+    await loginUser(req as Request, res as Response, mockNext);
+
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith({
+      message: "Invalid credentials",
+    });
   });
 });
