@@ -1,6 +1,5 @@
-import type { Config } from "jest";
-
-const config: Config = {
+/** @type {import('jest').Config} */
+const config = {
   preset: "ts-jest",
   testEnvironment: "node",
   extensionsToTreatAsEsm: [".ts"],
@@ -10,10 +9,9 @@ const config: Config = {
   transform: {
     "^.+\\.tsx?$": ["ts-jest", { useESM: true }],
   },
-  testMatch: ["**/__tests__/**/*.test.ts"],
-  setupFilesAfterEnv: ["./src/__test__/setup.ts"],
-
+  testMatch: ["**/test/**/*.test.ts"],
   clearMocks: true,
+  setupFilesAfterEnv: ["./src/test/setup.ts"],
 };
 
 export default config;
