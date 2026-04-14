@@ -32,6 +32,26 @@ const mockResponse = () => {
   const res: Partial<Response> = {};
   res.status = jest.fn().mockReturnValue(res);
   res.json = jest.fn().mockReturnValue(res);
+  return res;
 };
 
 const mockNext: NextFunction = jest.fn();
+
+//___________________________________________________
+//                TESTS
+//___________________________________________________
+
+describe("loginUser", () => {
+  // test1:
+  it("returns 400 if email is missing", async () => {
+    const req = mockRequest({ password: "pass123" });
+    const res = mockResponse();
+
+    await loginUser(req as Request, res as Response, mockNext);
+
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith({
+      message: "Please provide all nesscary details.",
+    });
+  });
+});
