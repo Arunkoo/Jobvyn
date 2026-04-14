@@ -17,8 +17,21 @@ jest.mock("../../index.ts", () => ({
   },
 }));
 
+jest.mock("axios");
+
 //Import--after mock...
 import { Request, Response, NextFunction } from "express";
 import { sql } from "../../utils/db.js";
 import { loginUser } from "../../controller/auth.js";
+import axios from "axios";
 import bcrypt from "bcrypt";
+
+const mockRequest = (body = {}): Partial<Request> => ({ body });
+
+const mockResponse = () => {
+  const res: Partial<Response> = {};
+  res.status = jest.fn().mockReturnValue(res);
+  res.json = jest.fn().mockReturnValue(res);
+};
+
+const mockNext: NextFunction = jest.fn();
