@@ -38,6 +38,8 @@ const mockResponse = () => {
 const mockNext: NextFunction = jest.fn();
 
 const data = {
+  id: 1,
+  name: "Arun",
   email: "someone@example.com",
   password: "pass123",
 };
@@ -82,6 +84,32 @@ describe("loginUser", () => {
     //mock one time db so next time it hit with fresh data..
     //TODO: COULD BE BETTER TYPE..
     (sql as unknown as jest.Mock).mockResolvedValueOnce([]);
+
+    await loginUser(req as Request, res as Response, mockNext);
+
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith({
+      message: "Invalid credentials",
+    });
+  });
+
+  //test 4..
+  it("return 400 if password does not match", async () => {
+    const req = mockRequest({ email: data.email, password: "wrongPass" });
+    const res = mockResponse();
+
+    // DB returns a user — but their stored password is hashed "correctpass"
+    // bcrypt.compare("wrongpass", hash) → false → triggers "Invalid credentials"
+    (sql as unknown as jest.Mock).mockResolvedValueOnce([
+      {
+        user_id: data.id,
+        name: data.name,
+        email: data.email,
+        password: data.password,
+        role: "recruiter",
+        skills: [],
+      },
+    ]);
 
     await loginUser(req as Request, res as Response, mockNext);
 
