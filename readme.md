@@ -109,6 +109,21 @@ jobvyn/
 
 ---
 
+## Testing
+
+Unit tests are integrated for the **Auth Service** using **Jest** and **ts-jest**, with all external dependencies (PostgreSQL, Redis, Kafka, Axios) fully mocked.
+
+| Service | Test File | Coverage |
+|---|---|---|
+| Auth | `backend/auth/src/test/unit/loginUser.unit.test.ts` | `loginUser` — 7 unit tests covering missing fields, user not found, wrong password, successful login, password not leaked, null skills normalisation |
+
+```bash
+# Run auth service unit tests
+cd backend/auth && npm test
+```
+
+---
+
 ## CI/CD Pipeline
 
 Push to `main` → GitHub Actions builds Docker images for all 6 services → pushes to Docker Hub → SSH into AWS EC2 → pulls latest images → restarts containers.

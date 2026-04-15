@@ -224,4 +224,39 @@ npm start
 
 ---
 
+## Testing
+
+Unit tests are written with **Jest** and **ts-jest**. External dependencies (database, Redis, Kafka, Axios) are fully mocked so tests are fast and self-contained.
+
+**Test file:** `src/test/unit/loginUser.unit.test.ts`
+
+### Run Tests
+
+```bash
+npm test
+```
+
+### Mocked Dependencies
+
+| Dependency | What is mocked |
+|---|---|
+| `../../utils/db.ts` | `sql` tagged template (PostgreSQL) |
+| `../../producer.ts` | `connectKafka`, `publishToTopic`, `disconnectKafka` |
+| `../../index.ts` | `redisClient` (`get`, `set`, `del`) |
+| `axios` | All HTTP calls |
+
+### `loginUser` — Test Coverage
+
+| # | Scenario | Expected |
+|---|---|---|
+| 1 | Email missing in body | `400` — "Please provide all nesscary details." |
+| 2 | Password missing in body | `400` — "Please provide all nesscary details.", `sql` not called |
+| 3 | User not found in DB (empty result) | `400` — "Invalid credentials" |
+| 4 | Password does not match bcrypt hash | `400` — "Invalid credentials" |
+| 5 | Valid credentials | `200` — `success: true`, `token` defined, correct message |
+| 6 | Successful login response | `password` field must not be present in `userObject` |
+| 7 | DB returns `null` skills | `userObject.skills` normalised to `[]` |
+
+---
+
 **Author:** Arun Kumar
