@@ -147,4 +147,27 @@ describe("loginUser", () => {
     expect(responseBody.token).toBeDefined();
     expect(responseBody.message).toBe("User LoggedIn successfully");
   });
+
+  //test 6..
+  it("does not include password in response", async () => {
+    const hash = await bcrypt.hash(data.password, 10);
+    const req = mockRequest({ email: data.email, password: data.password });
+    const res = mockResponse();
+
+    (sql as unknown as jest.Mock).mockResolvedValueOnce([
+      {
+        user_id: data.id,
+        name: data.name,
+        email: data.email,
+        password: hash,
+        role: "recruiter",
+        skills: null,
+      },
+    ]);
+
+    await loginUser(req as Request, res as Response, mockNext);
+    const responseBody = (res.json as jest.Mock).mock.calls[0][0];
+
+    expect(responseBody.userObject.password).toBeUndefined();
+  });
 });
