@@ -118,4 +118,33 @@ describe("loginUser", () => {
       message: "Invalid credentials",
     });
   });
+
+  //test 5..
+  it("return 200 with token on successful login", async () => {
+    const hash = await bcrypt.hash(data.password, 10);
+    const req = mockRequest({ email: data.email, password: data.password });
+    const res = mockResponse();
+
+    (sql as unknown as jest.Mock).mockResolvedValueOnce([
+      {
+        user_id: data.id,
+        name: data.name,
+        email: data.email,
+        password: hash,
+        role: "recruiter",
+        skills: null,
+      },
+    ]);
+
+    await loginUser(req as Request, res as Response, mockNext);
+
+    expect(res.status).toHaveBeenCalledWith(200);
+    // mock.calls is an array of every call made to this mock
+    // mock.calls[0] = first call, [0] = first argument
+    const responseBody = (res.json as jest.Mock).mock.calls[0][0];
+
+    expect(responseBody.success).toBe(true);
+    expect(responseBody.token).toBeDefined();
+    expect(responseBody.message).toBe("User LoggedIn successfully");
+  });
 });
