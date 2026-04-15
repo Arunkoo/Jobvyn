@@ -170,4 +170,27 @@ describe("loginUser", () => {
 
     expect(responseBody.userObject.password).toBeUndefined();
   });
+
+  //test 7..
+  it("converts null skills to empty array", async () => {
+    const hash = await bcrypt.hash(data.password, 10);
+    const req = mockRequest({ email: data.email, password: data.password });
+    const res = mockResponse();
+
+    (sql as unknown as jest.Mock).mockResolvedValueOnce([
+      {
+        user_id: data.id,
+        name: data.name,
+        email: data.email,
+        password: hash,
+        role: "recruiter",
+        skills: null, // <- DB return null skills convert it to []..
+      },
+    ]);
+
+    await loginUser(req as Request, res as Response, mockNext);
+    const responseBody = (res.json as jest.Mock).mock.calls[0][0];
+
+    expect(responseBody.userObject.skills).toEqual([]); // null->[]
+  });
 });
