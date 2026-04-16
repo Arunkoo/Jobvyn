@@ -28,7 +28,7 @@ jobs:
           FRONTEND_URL: http://localhost:3000
           UPLOAD_SERVICE_URL: http://localhost:5004
 
-  build-and-deploy:
+  Build:
     runs-on: ubuntu-latest
     needs: test
     steps:
@@ -94,7 +94,10 @@ jobs:
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/gateway:latest
 
-        # SSH INTO EC2 Instance and pull the latest images and restart the containers..
+  Deploy:
+    runs-on: ubuntu-latest
+    needs: Build
+    steps:
       - name: Deploy to EC2
         uses: appleboy/ssh-action@v1
         with:
