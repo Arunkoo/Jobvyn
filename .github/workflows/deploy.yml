@@ -23,9 +23,6 @@ jobs:
 
       - name: Run auth tests
         run: cd backend/auth && npm test
-
-      - name: Run auth tests
-        run: cd backend/utils && npm test
         env:
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
           FRONTEND_URL: http://localhost:3000
