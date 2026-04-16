@@ -5,9 +5,35 @@ on:
     branches: [main]
 
 jobs:
-  build-and-deploy:
+  # Run test first before building and deploying to make sure we dont deploy broken code.
+  test:
     runs-on: ubuntu-latest
 
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install auth dependencies
+        run: cd backend/auth && npm ci
+
+      - name: Run auth tests
+        run: cd backend/auth && npm test
+
+      - name: Run auth tests
+        run: cd backend/utils && npm test
+        env:
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          FRONTEND_URL: http://localhost:3000
+          UPLOAD_SERVICE_URL: http://localhost:5004
+
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    needs: test
     steps:
       # ------Getting code onto my github vm.
       - name: Checkout code
