@@ -26,16 +26,7 @@ import { loginUser } from "../../controller/auth.js";
 import axios from "axios";
 import bcrypt from "bcrypt";
 
-const mockRequest = (body = {}): Partial<Request> => ({ body });
-
-const mockResponse = () => {
-  const res: Partial<Response> = {};
-  res.status = jest.fn().mockReturnValue(res);
-  res.json = jest.fn().mockReturnValue(res);
-  return res;
-};
-
-const mockNext: NextFunction = jest.fn();
+import { mockRequest, mockResponse, mockNext } from "../helpers/mockSetup.js";
 
 const data = {
   id: 1,
