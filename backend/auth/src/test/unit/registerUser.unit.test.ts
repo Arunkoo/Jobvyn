@@ -32,6 +32,8 @@ const data = {
   name: "Arun",
   email: "someone@example.com",
   password: "pass123",
+  phoneNumber: "9999999999",
+  role: "recruiter",
 };
 // tests//
 
@@ -46,5 +48,24 @@ describe("registerUser", () => {
       message: "All details are required to register.",
     });
     expect(sql).not.toHaveBeenCalled();
+  });
+  it("return 409 if user with this email already exists", async () => {
+    const req = mockRequest({
+      name: data.name,
+      email: data.email,
+      password: data.password,
+      phoneNumber: data.phoneNumber,
+      role: data.role,
+    });
+    const res = mockResponse();
+
+    (sql as unknown as jest.Mock).mockResolvedValueOnce([{ user_id: data.id }]);
+
+    await registerUser(req as Request, res as Response, mockNext);
+
+    expect(res.status).toHaveBeenCalledWith(409);
+    expect(res.json).toHaveBeenCalledWith({
+      message: "User with this email already exits",
+    });
   });
 });
