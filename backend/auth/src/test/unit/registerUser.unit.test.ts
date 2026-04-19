@@ -68,4 +68,34 @@ describe("registerUser", () => {
       message: "User with this email already exits",
     });
   });
+  it("return 201 if user registered with role === recruiter", async () => {
+    const req = mockRequest({
+      name: data.name,
+      email: data.email,
+      password: data.password,
+      phoneNumber: data.phoneNumber,
+      role: data.role,
+    });
+    const res = mockResponse();
+
+    (sql as unknown as jest.Mock).mockResolvedValueOnce([]); //no duplicate user retrun empty..
+    (sql as unknown as jest.Mock).mockResolvedValueOnce([
+      {
+        name: data.name,
+        email: data.email,
+        password: data.password,
+        phoneNumber: data.phoneNumber,
+        role: data.role,
+        created_at: new Date(),
+      },
+    ]);
+
+    await registerUser(req as Request, res as Response, mockNext);
+
+    expect(res.status).toHaveBeenCalledWith(201);
+
+    const body = (res.json as jest.Mock).mock.calls[0][0];
+    expect(body.success).toBe(true);
+    expect(body.token).toBeDefined();
+  });
 });
