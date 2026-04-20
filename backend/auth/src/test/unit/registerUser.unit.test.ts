@@ -16,6 +16,10 @@ jest.mock("../../index.ts", () => ({
   },
 }));
 
+jest.mock("../../utils/buffer.js", () => ({
+  default: jest.fn(),
+}));
+
 jest.mock("axios");
 
 // Import....
@@ -24,6 +28,7 @@ import { sql } from "../../utils/db.js";
 import bcrypt from "bcrypt";
 import axios from "axios";
 import { registerUser } from "../../controller/auth.js";
+import getBuffer from "../../utils/buffer.js";
 
 import { mockRequest, mockResponse, mockNext } from "../helpers/mockSetup.js";
 
@@ -33,7 +38,8 @@ const data = {
   email: "someone@example.com",
   password: "pass123",
   phoneNumber: "9999999999",
-  role: "recruiter",
+  recruiterRole: "recruiter",
+  jobseekerRole: "jobseeker",
 };
 // tests//
 
@@ -55,7 +61,7 @@ describe("registerUser", () => {
       email: data.email,
       password: data.password,
       phoneNumber: data.phoneNumber,
-      role: data.role,
+      role: data.recruiterRole,
     });
     const res = mockResponse();
 
@@ -74,7 +80,7 @@ describe("registerUser", () => {
       email: data.email,
       password: data.password,
       phoneNumber: data.phoneNumber,
-      role: data.role,
+      role: data.recruiterRole,
     });
     const res = mockResponse();
 
@@ -85,7 +91,7 @@ describe("registerUser", () => {
         email: data.email,
         password: data.password,
         phoneNumber: data.phoneNumber,
-        role: data.role,
+        role: data.recruiterRole,
         created_at: new Date(),
       },
     ]);
@@ -97,5 +103,30 @@ describe("registerUser", () => {
     const body = (res.json as jest.Mock).mock.calls[0][0];
     expect(body.success).toBe(true);
     expect(body.token).toBeDefined();
+  });
+
+  it("returns 400 if no file is uploaded for jobseeker", async () => {
+    // Arrange
+    const req = mockRequest(
+      {
+        name: data.name,
+        email: data.email,
+        password: data.password,
+        phoneNumber: data.phoneNumber,
+        role: data.jobseekerRole,
+      },
+      {},
+      undefined, // no file
+    );
+    const res = mockResponse();
+
+    (sql as unknown as jest.Mock).mockResolvedValueOnce([]); // no duplicate
+
+    await registerUser(req as Request, res as Response, mockNext);
+
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith({
+      message: "Please upload a valid resume file to authenticate.",
+    });
   });
 });

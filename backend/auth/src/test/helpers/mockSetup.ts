@@ -1,6 +1,10 @@
 import { Request, Response, NextFunction } from "express";
 
-export const mockRequest = (body = {}): Partial<Request> => ({ body });
+export const mockRequest = (
+  body = {},
+  params = {},
+  file?: any,
+): Partial<Request> => ({ body, params, file });
 
 export const mockResponse = () => {
   const res: Partial<Response> = {};
