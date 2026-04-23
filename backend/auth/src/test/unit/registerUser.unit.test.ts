@@ -16,9 +16,7 @@ jest.mock("../../index.ts", () => ({
   },
 }));
 
-jest.mock("../../utils/buffer.js", () => ({
-  default: jest.fn(),
-}));
+jest.mock("../../utils/buffer.js", () => jest.fn());
 
 jest.mock("axios");
 
@@ -127,6 +125,35 @@ describe("registerUser", () => {
     expect(res.status).toHaveBeenCalledWith(400);
     expect(res.json).toHaveBeenCalledWith({
       message: "Please upload a valid resume file to authenticate.",
+    });
+  });
+
+  it("return 500 if no buffer is returned by server", async () => {
+    const fakeFile = {
+      originalname: "resume.pdf",
+      buffer: Buffer.from("fake"),
+      mimetype: "application/pdf",
+    };
+    const req = mockRequest(
+      {
+        name: data.name,
+        email: data.email,
+        password: data.password,
+        phoneNumber: data.phoneNumber,
+        role: data.jobseekerRole,
+      },
+      {},
+      fakeFile,
+    );
+
+    const res = mockResponse();
+    (sql as unknown as jest.Mock).mockResolvedValueOnce([]);
+    (getBuffer as unknown as jest.Mock).mockReturnValueOnce(null);
+
+    await registerUser(req as Request, res as Response, mockNext);
+    expect(res.status).toHaveBeenCalledWith(500);
+    expect(res.json).toHaveBeenCalledWith({
+      message: "Failed to generate buffer",
     });
   });
 });
