@@ -228,7 +228,9 @@ npm start
 
 Unit tests are written with **Jest** and **ts-jest**. External dependencies (database, Redis, Kafka, Axios) are fully mocked so tests are fast and self-contained.
 
-**Test file:** `src/test/unit/loginUser.unit.test.ts`
+**Test files:**
+- `src/test/unit/registerUser.unit.test.ts`
+- `src/test/unit/loginUser.unit.test.ts`
 
 ### Run Tests
 
@@ -243,7 +245,18 @@ npm test
 | `../../utils/db.ts` | `sql` tagged template (PostgreSQL) |
 | `../../producer.ts` | `connectKafka`, `publishToTopic`, `disconnectKafka` |
 | `../../index.ts` | `redisClient` (`get`, `set`, `del`) |
+| `../../utils/buffer.js` | `getBuffer` (file buffer generation) |
 | `axios` | All HTTP calls |
+
+### `registerUser` — Test Coverage
+
+| # | Scenario | Expected |
+|---|---|---|
+| 1 | Required fields missing in body | `400` — "All details are required to register.", `sql` not called |
+| 2 | User with given email already exists in DB | `409` — "User with this email already exits" |
+| 3 | Valid recruiter registration | `201` — `success: true`, `token` defined |
+| 4 | Jobseeker registration with no file uploaded | `400` — "Please upload a valid resume file to authenticate." |
+| 5 | Server returns no buffer for uploaded file | `500` — "Failed to generate buffer" |
 
 ### `loginUser` — Test Coverage
 
