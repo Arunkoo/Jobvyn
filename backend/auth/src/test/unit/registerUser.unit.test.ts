@@ -156,4 +156,51 @@ describe("registerUser", () => {
       message: "Failed to generate buffer",
     });
   });
+
+  it("return 201 if jobseeker registered successfully", async () => {
+    const fakeFile = {
+      originalname: "resume.pdf",
+      buffer: Buffer.from("fake"),
+      mimetype: "application/pdf",
+    };
+    const req = mockRequest(
+      {
+        name: data.name,
+        email: data.email,
+        password: data.password,
+        phoneNumber: data.phoneNumber,
+        role: data.jobseekerRole,
+      },
+      {},
+      fakeFile,
+    );
+
+    const res = mockResponse();
+
+    (sql as unknown as jest.Mock).mockResolvedValueOnce([]);
+    (getBuffer as unknown as jest.Mock).mockReturnValueOnce({
+      content: "data:application/pdf;base64,ZmFrZQ==",
+    });
+    (axios.post as unknown as jest.Mock).mockResolvedValueOnce({
+      data: { url: "https://cdn.example.com/resume.pdf", public_id: "abc123" },
+    });
+    (sql as unknown as jest.Mock).mockResolvedValueOnce([
+      {
+        user_id: data.id,
+        name: data.name,
+        email: data.email,
+        phone_number: data.phoneNumber,
+        role: data.jobseekerRole,
+        resume: "https://cdn.example.com/resume.pdf",
+        created_at: new Date(),
+      },
+    ]);
+
+    await registerUser(req as Request, res as Response, mockNext);
+
+    expect(res.status).toHaveBeenCalledWith(201);
+    const body = (res.json as jest.Mock).mock.calls[0][0];
+    expect(body.success).toBe(true);
+    expect(body.token).toBeDefined();
+  });
 });
