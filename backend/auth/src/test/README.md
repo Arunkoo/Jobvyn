@@ -1,6 +1,6 @@
-# Auth Service — Unit Tests
+# Auth Service — Tests
 
-Unit tests for the `auth` microservice controllers, written with Jest and TypeScript.
+Unit and integration tests for the `auth` microservice controllers, written with Jest and TypeScript.
 
 ## Directory Structure
 
@@ -9,9 +9,11 @@ src/test/
 ├── setup.ts                        # Global test setup (env vars, console silencing)
 ├── helpers/
 │   └── mockSetup.ts                # Shared mock factories (request, response, next)
-└── unit/
-    ├── loginUser.unit.test.ts      # Tests for loginUser controller
-    └── registerUser.unit.test.ts   # Tests for registerUser controller
+├── unit/
+│   ├── loginUser.unit.test.ts      # Tests for loginUser controller
+│   └── registerUser.unit.test.ts   # Tests for registerUser controller
+└── integration/
+    └── auth.integration.test.ts    # Integration tests for auth routes via supertest
 ```
 
 ## Running Tests
@@ -51,6 +53,14 @@ npm run test:watch
 | 4 | Jobseeker with no file uploaded | `400` — resume required |
 | 5 | File uploaded but buffer generation fails | `500` — buffer error |
 | 6 | Jobseeker with valid resume | `201` — JWT token returned |
+
+### `POST /api/auth/register` (Integration)
+
+| # | Scenario | Expected |
+|---|----------|----------|
+| 1 | Required fields missing | `400` — all details required message |
+
+> Integration tests hit the real Express app via `supertest`. External dependencies (DB, Kafka, Redis, axios) are still mocked at the module level to keep tests isolated and fast.
 
 ## Mocks
 
