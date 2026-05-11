@@ -59,6 +59,8 @@ npm run test:watch
 | # | Scenario | Expected |
 |---|----------|----------|
 | 1 | Required fields missing | `400` — all details required message |
+| 2 | Email already registered | `409` — user with this email already exists |
+| 3 | Recruiter registration | `201` — success true, JWT token in response |
 
 > Integration tests hit the real Express app via `supertest`. External dependencies (DB, Kafka, Redis, axios) are still mocked at the module level to keep tests isolated and fast.
 
