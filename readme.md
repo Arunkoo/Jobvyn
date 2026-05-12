@@ -109,17 +109,14 @@ jobvyn/
 
 ---
 
-## Testing
-
-Unit tests are integrated for the **Auth Service** using **Jest** and **ts-jest**, with all external dependencies (PostgreSQL, Redis, Kafka, Axios) fully mocked.
-
-| Service | Test File | Coverage |
-|---|---|---|
-| Auth | `backend/auth/src/test/unit/loginUser.unit.test.ts` | `loginUser` — 7 unit tests covering missing fields, user not found, wrong password, successful login, password not leaked, null skills normalisation |
+## Running Tests
 
 ```bash
-# Run auth service unit tests
+# Auth service — all tests (unit + integration)
 cd backend/auth && npm test
+
+# Auth service — unit tests only
+cd backend/auth && npm run test:unit
 ```
 
 ---

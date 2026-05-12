@@ -226,16 +226,16 @@ npm start
 
 ## Testing
 
-Unit tests are written with **Jest** and **ts-jest**. External dependencies (database, Redis, Kafka, Axios) are fully mocked so tests are fast and self-contained.
-
-**Test files:**
-- `src/test/unit/registerUser.unit.test.ts`
-- `src/test/unit/loginUser.unit.test.ts`
+Tests are written with **Jest** and **ts-jest**. All external dependencies (PostgreSQL, Redis, Kafka, Axios) are mocked in both unit and integration tests, keeping runs fast and self-contained.
 
 ### Run Tests
 
 ```bash
+# All tests (unit + integration)
 npm test
+
+# Unit tests only
+npm run test:unit
 ```
 
 ### Mocked Dependencies
@@ -248,7 +248,15 @@ npm test
 | `../../utils/buffer.js` | `getBuffer` (file buffer generation) |
 | `axios` | All HTTP calls |
 
-### `registerUser` — Test Coverage
+---
+
+### Unit Tests
+
+**Test files:**
+- `src/test/unit/registerUser.unit.test.ts`
+- `src/test/unit/loginUser.unit.test.ts`
+
+#### `registerUser` — Coverage
 
 | # | Scenario | Expected |
 |---|---|---|
@@ -258,7 +266,7 @@ npm test
 | 4 | Jobseeker registration with no file uploaded | `400` — "Please upload a valid resume file to authenticate." |
 | 5 | Server returns no buffer for uploaded file | `500` — "Failed to generate buffer" |
 
-### `loginUser` — Test Coverage
+#### `loginUser` — Coverage
 
 | # | Scenario | Expected |
 |---|---|---|
@@ -269,6 +277,23 @@ npm test
 | 5 | Valid credentials | `200` — `success: true`, `token` defined, correct message |
 | 6 | Successful login response | `password` field must not be present in `userObject` |
 | 7 | DB returns `null` skills | `userObject.skills` normalised to `[]` |
+
+---
+
+### Integration Tests
+
+**Test file:** `src/test/integration/auth.integration.test.ts`
+
+Uses **Supertest** to fire real HTTP requests against the Express app. The same dependency mocks apply — no live database or external services required.
+
+#### `POST /api/auth/register` — Coverage
+
+| # | Scenario | Expected |
+|---|---|---|
+| 1 | Required fields missing in body | `400` — "All details are required to register." |
+| 2 | User with given email already exists in DB | `409` — "User with this email already exits" |
+| 3 | Valid recruiter registration | `201` — `success: true`, `token` defined |
+| 4 | Jobseeker registration with no file uploaded | `400` — "Please upload a valid resume file to authenticate." |
 
 ---
 
