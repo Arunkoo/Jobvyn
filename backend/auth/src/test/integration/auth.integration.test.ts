@@ -58,4 +58,18 @@ describe("POST /api/auth/register", () => {
     expect(res.body.success).toBe(true);
     expect(res.body.token).toBeDefined();
   });
+  it("return 400 if no file is uploaded for jobseeker", async () => {
+    (sql as unknown as jest.Mock).mockResolvedValueOnce([]);
+    const res = await request(app).post("/api/auth/register").send({
+      name: "Arun",
+      email: "Someone@example.com",
+      password: "999499439",
+      phoneNumber: "9999999999",
+      role: "jobseeker",
+    });
+    expect(res.status).toBe(400);
+    expect(res.body.message).toBe(
+      "Please upload a valid resume file to authenticate.",
+    );
+  });
 });
